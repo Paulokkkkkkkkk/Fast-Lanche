@@ -41,7 +41,7 @@ Desenvolver a plataforma **Fast Lanche** em **HTML, CSS e JavaScript ES6+**, seg
 
 ---
 
-# Fase 1 — Interface
+# Fase 1 — Interface ✅
 ## Componentes
 - Header
 - Hero
@@ -54,7 +54,7 @@ Desenvolver a plataforma **Fast Lanche** em **HTML, CSS e JavaScript ES6+**, seg
 
 ---
 
-# Fase 2 — Camada de Dados
+# Fase 2 — Camada de Dados ✅
 Criar:
 - menuItems
 - cart
@@ -67,7 +67,7 @@ Criar:
 
 ---
 
-# Fase 3 — Cardápio
+# Fase 3 — Cardápio ✅
 **Arquivo:** `app.js`
 
 Implementar:

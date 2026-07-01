@@ -429,6 +429,10 @@ a{
   background:var(--cinza-50);
 }
 
+.menu-empty{
+  grid-column:1/-1;
+}
+
 .cart-summary{
   display:grid;
   gap:.65rem;
