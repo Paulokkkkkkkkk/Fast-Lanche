@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fast Lanche</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="brand">Fast Lanche</h1>
+      <nav class="main-nav">
+        <a href="#menu">Cardápio</a>
+        <a href="#cart">Carrinho</a>
+        <a href="#booking">Reserva</a>
+        <a href="#feedback">Feedback</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h2>Bem-vindo ao Fast Lanche</h2>
+        <p>Peça online com rapidez e segurança.</p>
+      </div>
+    </section>
+
+    <section id="menu" class="menu container">
+      <h3>Cardápio</h3>
+      <div id="menu-items" class="cards-grid">
+        <!-- itens renderizados dinamicamente -->
+      </div>
+    </section>
+
+    <section id="cart" class="cart container">
+      <h3>Carrinho</h3>
+      <div id="cart-contents">Carrinho vazio</div>
+    </section>
+
+    <section id="booking" class="booking container">
+      <h3>Reserva</h3>
+      <div id="booking-form">Formulário de reserva</div>
+    </section>
+
+    <section id="feedback" class="feedback container">
+      <h3>Feedbacks</h3>
+      <div id="feedback-list">Nenhum feedback ainda</div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>&copy; Fast Lanche</small>
+    </div>
+  </footer>
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
