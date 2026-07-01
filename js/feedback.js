@@ -1,15 +1,25 @@
-// feedback.js - cadastro e persistência de avaliações (stub)
+// feedback.js - camada de dados inicial de avaliacoes
 const feedbacks = [];
 
-function addFeedback(f){
-  if(!f || !f.text) return false;
-  feedbacks.push({...f, id: Date.now()});
+function addFeedback(feedback){
+  if(!feedback || !feedback.comment) return false;
+
+  feedbacks.push({
+    id: Date.now(),
+    name: feedback.name || 'Cliente',
+    rating: Number(feedback.rating) || 1,
+    comment: feedback.comment,
+    timestamp: new Date().toISOString()
+  });
+
   return true;
 }
 
 function getAverage(){
   if(!feedbacks.length) return 0;
-  return feedbacks.reduce((s,f)=>s + (f.score||0),0)/feedbacks.length;
+
+  const total = feedbacks.reduce((sum, feedback) => sum + feedback.rating, 0);
+  return total / feedbacks.length;
 }
 
-export { feedbacks, addFeedback, getAverage };
+export { addFeedback, feedbacks, getAverage };

@@ -1,12 +1,27 @@
-// checkout.js - validação e fluxo de checkout (stub)
+// checkout.js - camada de dados inicial do checkout
+const checkoutData = {
+  customerName: '',
+  document: '',
+  phone: '',
+  email: '',
+  address: '',
+  orderNumber: '',
+  paymentMethod: '',
+  notes: '',
+  isPaymentPending: false,
+  paymentStatus: 'idle'
+};
+
 function validateCheckout(data){
-  // validações JS adicionais
-  return true;
+  return Boolean(data);
 }
 
 function processPayment(data){
-  // pagamento simulado
-  return Promise.resolve({ success: true, id: Date.now() });
+  return Promise.resolve({
+    success: true,
+    id: Date.now(),
+    data
+  });
 }
 
-export { validateCheckout, processPayment };
+export { checkoutData, processPayment, validateCheckout };

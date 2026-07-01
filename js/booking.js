@@ -1,12 +1,20 @@
-// booking.js - reserva e validações (stub)
+// booking.js - camada de dados inicial de reservas
+const bookingRequest = {
+  customerName: '',
+  phone: '',
+  date: '',
+  time: '',
+  guests: 2,
+  status: 'idle',
+  errors: []
+};
+
 function validateBooking(dateStr, timeStr, people){
-  // validar formato e regras básicas
-  return true;
+  return Boolean(dateStr && timeStr && people);
 }
 
 function submitBooking(payload){
-  // armazenar ou enviar
   console.log('Reserva enviada', payload);
 }
 
-export { validateBooking, submitBooking };
+export { bookingRequest, submitBooking, validateBooking };

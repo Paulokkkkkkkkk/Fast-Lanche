@@ -1,4 +1,4 @@
-// app.js - inicializacao visual da interface da Fase 1
+// app.js - dados e inicializacao visual do cardapio
 const menuContainer = document.getElementById('menu-items');
 
 const menuItems = [
@@ -8,14 +8,16 @@ const menuItems = [
     description: 'Hamburguer, queijo, alface, tomate e molho da casa.',
     price: 14.9,
     category: 'Lanches',
+    maxQuantity: 10,
     active: true
   },
   {
     id: 2,
     name: 'Batata Frita',
-    description: 'Porção crocante com sal na medida e molho especial.',
+    description: 'Porcao crocante com sal na medida e molho especial.',
     price: 7.5,
     category: 'Acompanhamentos',
+    maxQuantity: 8,
     active: true
   },
   {
@@ -24,9 +26,14 @@ const menuItems = [
     description: 'Bebida gelada preparada na hora.',
     price: 8.9,
     category: 'Bebidas',
+    maxQuantity: 12,
     active: true
   }
 ];
+
+let visibleItems = menuItems.filter(item => item.active);
+let activeFilter = 'all';
+let searchTerm = '';
 
 const formatCurrency = value => (
   value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -39,7 +46,7 @@ function createTextElement(tagName, className, text){
   return element;
 }
 
-function renderMenu(items = menuItems){
+function renderMenu(items = visibleItems){
   if(!menuContainer) return;
 
   menuContainer.replaceChildren();
@@ -110,4 +117,10 @@ function setup(){
 
 window.addEventListener('DOMContentLoaded', setup);
 
-export { renderMenu, menuItems };
+export {
+  activeFilter,
+  menuItems,
+  renderMenu,
+  searchTerm,
+  visibleItems
+};
