@@ -1,48 +1,111 @@
-// app.js - responsabilidade: renderização do cardápio, busca e filtros (stub)
+// app.js - inicializacao visual da interface da Fase 1
 const menuContainer = document.getElementById('menu-items');
-const cartContents = document.getElementById('cart-contents');
 
 const menuItems = [
-  { id: 1, name: 'X-Burger', price: 14.9, category: 'Lanches', active: true },
-  { id: 2, name: 'Batata Frita', price: 7.5, category: 'Acompanhamentos', active: true }
+  {
+    id: 1,
+    name: 'X-Burger',
+    description: 'Hamburguer, queijo, alface, tomate e molho da casa.',
+    price: 14.9,
+    category: 'Lanches',
+    active: true
+  },
+  {
+    id: 2,
+    name: 'Batata Frita',
+    description: 'Porção crocante com sal na medida e molho especial.',
+    price: 7.5,
+    category: 'Acompanhamentos',
+    active: true
+  },
+  {
+    id: 3,
+    name: 'Suco Natural',
+    description: 'Bebida gelada preparada na hora.',
+    price: 8.9,
+    category: 'Bebidas',
+    active: true
+  }
 ];
+
+const formatCurrency = value => (
+  value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+);
+
+function createTextElement(tagName, className, text){
+  const element = document.createElement(tagName);
+  if(className) element.className = className;
+  element.textContent = text;
+  return element;
+}
 
 function renderMenu(items = menuItems){
   if(!menuContainer) return;
-  menuContainer.innerHTML = '';
-  items.filter(i => i.active).forEach(item =>{
-    const card = document.createElement('article');
-    card.className = 'card';
-    card.innerHTML = `
-      <h4>${item.name}</h4>
-      <p>R$ ${item.price.toFixed(2)}</p>
-      <button data-id="${item.id}" class="add-to-cart">Adicionar</button>
-    `;
-    menuContainer.appendChild(card);
-  });
-}
 
-function setup(){
-  renderMenu();
-  // listeners básicos
-  document.body.addEventListener('click', (e)=>{
-    const t = e.target;
-    if(t.matches('.add-to-cart')){
-      const id = Number(t.dataset.id);
-      console.log('Adicionar ao carrinho:', id);
-      showToast('Item adicionado ao carrinho');
-    }
+  menuContainer.replaceChildren();
+
+  items.filter(item => item.active).forEach(item =>{
+    const card = document.createElement('article');
+    card.className = 'menu-item';
+
+    const visual = document.createElement('div');
+    visual.className = 'menu-item-visual';
+    visual.setAttribute('aria-hidden', 'true');
+
+    const category = createTextElement('p', 'section-kicker', item.category);
+    const title = createTextElement('h3', '', item.name);
+    const description = createTextElement('p', '', item.description);
+
+    const footer = document.createElement('div');
+    footer.className = 'menu-item-footer';
+
+    const price = createTextElement('span', 'price', formatCurrency(item.price));
+
+    const button = document.createElement('button');
+    button.className = 'add-to-cart';
+    button.type = 'button';
+    button.dataset.id = String(item.id);
+    button.textContent = 'Adicionar';
+
+    footer.append(price, button);
+    card.append(visual, category, title, description, footer);
+    menuContainer.appendChild(card);
   });
 }
 
 function showToast(message){
   const container = document.getElementById('toast-container');
   if(!container) return;
-  const el = document.createElement('div');
-  el.className = 'toast';
-  el.textContent = message;
-  container.appendChild(el);
-  setTimeout(()=> el.remove(), 3000);
+
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(() => toast.remove(), 3000);
+}
+
+function setupDemoInteractions(){
+  document.body.addEventListener('click', event =>{
+    const target = event.target;
+    if(!(target instanceof HTMLElement)) return;
+
+    if(target.matches('.add-to-cart')){
+      showToast('Item selecionado. A logica do carrinho entra na Fase 4.');
+    }
+  });
+
+  document.querySelectorAll('form').forEach(form =>{
+    form.addEventListener('submit', event =>{
+      event.preventDefault();
+      showToast('Formulario pronto para a proxima fase.');
+    });
+  });
+}
+
+function setup(){
+  renderMenu();
+  setupDemoInteractions();
 }
 
 window.addEventListener('DOMContentLoaded', setup);

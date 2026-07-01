@@ -8,51 +8,208 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="container">
-      <h1 class="brand">Fast Lanche</h1>
-      <nav class="main-nav">
-        <a href="#menu">Cardápio</a>
+    <div class="container header-layout">
+      <a class="brand" href="#top" aria-label="Fast Lanche - inicio">Fast Lanche</a>
+      <nav class="main-nav" aria-label="Navegacao principal">
+        <a href="#menu">Cardapio</a>
         <a href="#cart">Carrinho</a>
+        <a href="#checkout">Checkout</a>
         <a href="#booking">Reserva</a>
         <a href="#feedback">Feedback</a>
       </nav>
     </div>
   </header>
 
-  <main>
-    <section class="hero">
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <p class="section-kicker">Delivery e reservas</p>
+          <h1 id="hero-title">Fast Lanche</h1>
+          <p>Monte seu pedido, acompanhe o total e reserve uma mesa em uma experiencia simples e rapida.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#menu">Ver cardapio</a>
+            <a class="button button-secondary" href="#booking">Reservar mesa</a>
+          </div>
+        </div>
+        <div class="hero-feature" aria-label="Pedido em destaque">
+          <span class="hero-badge">Pronto em media: 25 min</span>
+          <div class="plate-visual" aria-hidden="true">
+            <span></span>
+          </div>
+          <div class="feature-row">
+            <strong>Combo Fast</strong>
+            <span>R$ 29,90</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu" class="page-section menu-section" aria-labelledby="menu-title">
       <div class="container">
-        <h2>Bem-vindo ao Fast Lanche</h2>
-        <p>Peça online com rapidez e segurança.</p>
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Cardápio online</p>
+            <h2 id="menu-title">Escolha seu lanche</h2>
+          </div>
+          <div class="menu-tools" aria-label="Filtros do cardapio">
+            <label class="field field-inline" for="search-input">
+              <span>Buscar</span>
+              <input id="search-input" type="search" placeholder="Nome ou descricao">
+            </label>
+            <label class="field field-inline" for="category-filter">
+              <span>Categoria</span>
+              <select id="category-filter">
+                <option value="all">Todas</option>
+                <option value="Lanches">Lanches</option>
+                <option value="Acompanhamentos">Acompanhamentos</option>
+                <option value="Bebidas">Bebidas</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div id="menu-items" class="cards-grid" aria-live="polite"></div>
       </div>
     </section>
 
-    <section id="menu" class="menu container">
-      <h3>Cardápio</h3>
-      <div id="menu-items" class="cards-grid">
-        <!-- itens renderizados dinamicamente -->
+    <section class="order-area" aria-label="Pedido e checkout">
+      <div class="container order-layout">
+        <aside id="cart" class="cart-panel" aria-labelledby="cart-title">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="section-kicker">Seu pedido</p>
+              <h2 id="cart-title">Carrinho</h2>
+            </div>
+            <span class="cart-count" id="cart-count">0 itens</span>
+          </div>
+          <ul id="cart-items" class="cart-items">
+            <li class="empty-state">Seu carrinho esta vazio.</li>
+          </ul>
+          <dl class="cart-summary">
+            <div>
+              <dt>Subtotal</dt>
+              <dd id="cart-subtotal">R$ 0,00</dd>
+            </div>
+            <div>
+              <dt>Entrega</dt>
+              <dd id="cart-fee">R$ 0,00</dd>
+            </div>
+            <div class="summary-total">
+              <dt>Total</dt>
+              <dd id="cart-total">R$ 0,00</dd>
+            </div>
+          </dl>
+        </aside>
+
+        <section id="checkout" class="checkout-section" aria-labelledby="checkout-title">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="section-kicker">Pagamento direto</p>
+              <h2 id="checkout-title">Checkout</h2>
+            </div>
+            <span class="secure-pill">Ambiente simulado</span>
+          </div>
+          <form id="checkout-form" class="form-grid">
+            <label class="field" for="checkout-name">
+              <span>Nome completo</span>
+              <input id="checkout-name" name="name" type="text" autocomplete="name" required>
+            </label>
+            <label class="field" for="checkout-phone">
+              <span>Telefone</span>
+              <input id="checkout-phone" name="phone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" required>
+            </label>
+            <label class="field field-full" for="checkout-address">
+              <span>Endereco de entrega</span>
+              <input id="checkout-address" name="address" type="text" autocomplete="street-address" required>
+            </label>
+            <label class="field" for="checkout-payment">
+              <span>Pagamento</span>
+              <select id="checkout-payment" name="payment" required>
+                <option value="">Selecione</option>
+                <option value="pix">Pix</option>
+                <option value="card">Cartao</option>
+                <option value="cash">Dinheiro</option>
+              </select>
+            </label>
+            <label class="field" for="checkout-document">
+              <span>CPF/CNPJ opcional</span>
+              <input id="checkout-document" name="document" type="text">
+            </label>
+            <div class="field-full form-actions">
+              <button class="button button-primary" type="submit">Finalizar pedido</button>
+              <p id="checkout-feedback" class="form-feedback" aria-live="polite"></p>
+            </div>
+          </form>
+        </section>
       </div>
     </section>
 
-    <section id="cart" class="cart container">
-      <h3>Carrinho</h3>
-      <div id="cart-contents">Carrinho vazio</div>
+    <section id="booking" class="page-section booking-section" aria-labelledby="booking-title">
+      <div class="container split-layout">
+        <div class="section-copy">
+          <p class="section-kicker">Agendamento</p>
+          <h2 id="booking-title">Reserve uma mesa</h2>
+          <p>Escolha data, horario e quantidade de pessoas para organizar sua visita com antecedencia.</p>
+        </div>
+        <form id="booking-form" class="panel-form">
+          <label class="field" for="booking-date">
+            <span>Data</span>
+            <input id="booking-date" name="date" type="date" required>
+          </label>
+          <label class="field" for="booking-time">
+            <span>Horario</span>
+            <input id="booking-time" name="time" type="time" min="11:00" max="23:00" required>
+          </label>
+          <label class="field" for="booking-guests">
+            <span>Pessoas</span>
+            <input id="booking-guests" name="guests" type="number" min="1" max="12" value="2" required>
+          </label>
+          <button class="button button-primary" type="submit">Confirmar reserva</button>
+          <p id="booking-feedback" class="form-feedback" aria-live="polite"></p>
+        </form>
+      </div>
     </section>
 
-    <section id="booking" class="booking container">
-      <h3>Reserva</h3>
-      <div id="booking-form">Formulário de reserva</div>
-    </section>
-
-    <section id="feedback" class="feedback container">
-      <h3>Feedbacks</h3>
-      <div id="feedback-list">Nenhum feedback ainda</div>
+    <section id="feedback" class="page-section feedback-section" aria-labelledby="feedback-title">
+      <div class="container feedback-layout">
+        <div>
+          <p class="section-kicker">Opiniões</p>
+          <h2 id="feedback-title">Feedbacks</h2>
+          <div class="rating-summary">
+            <strong id="average-rating">0,0</strong>
+            <span>media das avaliações</span>
+          </div>
+          <div id="feedback-list" class="feedback-list">
+            <article class="feedback-item">
+              <strong>Primeira avaliação</strong>
+              <p>Os comentarios dos clientes aparecerao aqui nas proximas fases.</p>
+            </article>
+          </div>
+        </div>
+        <form id="feedback-form" class="panel-form">
+          <label class="field" for="feedback-name">
+            <span>Nome</span>
+            <input id="feedback-name" name="name" type="text" required>
+          </label>
+          <label class="field" for="feedback-rating">
+            <span>Nota</span>
+            <input id="feedback-rating" name="rating" type="range" min="1" max="5" value="5">
+          </label>
+          <label class="field" for="feedback-comment">
+            <span>Comentario</span>
+            <textarea id="feedback-comment" name="comment" rows="4" minlength="10" required></textarea>
+          </label>
+          <button class="button button-primary" type="submit">Enviar feedback</button>
+          <p id="feedback-message" class="form-feedback" aria-live="polite"></p>
+        </form>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <small>&copy; Fast Lanche</small>
+    <div class="container footer-layout">
+      <strong>Fast Lanche</strong>
+      <small>&copy; 2026 Fast Lanche. Todos os direitos reservados.</small>
     </div>
   </footer>
 
