@@ -7,6 +7,7 @@ const cartTotal = document.getElementById('cart-total');
 
 const DELIVERY_FEE = 6;
 const FREE_DELIVERY_MINIMUM = 50;
+const CART_STORAGE_KEY = 'fastlanche_cart';
 
 const cart = {
   items: [],
@@ -43,6 +44,98 @@ function calculateCartTotals(){
   };
 }
 
+function isStorageAvailable(){
+  try{
+    return typeof window !== 'undefined' && Boolean(window.localStorage);
+  }catch(error){
+    console.warn('LocalStorage indisponivel para o carrinho.', error);
+    return false;
+  }
+}
+
+function getSerializableCart(){
+  return {
+    items: cart.items.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      maxQuantity: item.maxQuantity
+    })),
+    subtotal: cart.subtotal,
+    deliveryFee: cart.deliveryFee,
+    total: cart.total
+  };
+}
+
+function saveCart(){
+  if(!isStorageAvailable()) return false;
+
+  try{
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(getSerializableCart()));
+    return true;
+  }catch(error){
+    console.warn('Nao foi possivel salvar o carrinho.', error);
+    return false;
+  }
+}
+
+function isValidStoredItem(item){
+  return (
+    item &&
+    Number.isFinite(Number(item.id)) &&
+    typeof item.name === 'string' &&
+    Number.isFinite(Number(item.price)) &&
+    Number.isFinite(Number(item.quantity))
+  );
+}
+
+function normalizeStoredItem(item){
+  const maxQuantity = Number(item.maxQuantity) || 99;
+
+  return {
+    id: Number(item.id),
+    name: item.name,
+    price: Math.max(Number(item.price) || 0, 0),
+    quantity: normalizeQuantity(Number(item.quantity), maxQuantity),
+    maxQuantity
+  };
+}
+
+function loadCart(){
+  if(!isStorageAvailable()){
+    calculateCartTotals();
+    renderCart();
+    return cart;
+  }
+
+  try{
+    const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+    if(!storedCart){
+      calculateCartTotals();
+      renderCart();
+      return cart;
+    }
+
+    const parsedCart = JSON.parse(storedCart);
+    const storedItems = Array.isArray(parsedCart?.items) ? parsedCart.items : [];
+
+    cart.items = storedItems
+      .filter(isValidStoredItem)
+      .map(normalizeStoredItem);
+
+    calculateCartTotals();
+    renderCart();
+    return cart;
+  }catch(error){
+    console.warn('Nao foi possivel carregar o carrinho.', error);
+    cart.items = [];
+    calculateCartTotals();
+    renderCart();
+    return cart;
+  }
+}
+
 function getCartItem(itemId){
   return cart.items.find(item => item.id === Number(itemId));
 }
@@ -65,6 +158,7 @@ function addToCart(item){
   }
 
   calculateCartTotals();
+  saveCart();
   renderCart();
   return cart;
 }
@@ -75,6 +169,7 @@ function incrementItem(itemId){
 
   item.quantity = normalizeQuantity(item.quantity + 1, item.maxQuantity);
   calculateCartTotals();
+  saveCart();
   renderCart();
   return cart;
 }
@@ -90,6 +185,7 @@ function decrementItem(itemId){
 
   item.quantity = normalizeQuantity(item.quantity - 1, item.maxQuantity);
   calculateCartTotals();
+  saveCart();
   renderCart();
   return cart;
 }
@@ -100,6 +196,7 @@ function removeItem(itemId){
 
   cart.items.splice(index, 1);
   calculateCartTotals();
+  saveCart();
   renderCart();
   return cart;
 }
@@ -213,7 +310,9 @@ export {
   decrementItem,
   getSubtotal,
   incrementItem,
+  loadCart,
   removeItem,
   renderCart,
+  saveCart,
   setupCartControls
 };

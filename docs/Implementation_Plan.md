@@ -97,7 +97,7 @@ Regras:
 
 ---
 
-# Fase 5 — Persistência
+# Fase 5 — Persistência ✅
 Implementar LocalStorage.
 
 Chaves:

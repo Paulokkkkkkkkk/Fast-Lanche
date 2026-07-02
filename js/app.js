@@ -1,5 +1,5 @@
 // app.js - cardapio dinamico, busca e filtros
-import { addToCart, setupCartControls } from './cart.js';
+import { addToCart, loadCart, setupCartControls } from './cart.js';
 
 const menuContainer = document.getElementById('menu-items');
 const searchInput = document.getElementById('search-input');
@@ -230,6 +230,7 @@ function setupDemoInteractions(){
 function setup(){
   updateVisibleItems();
   setupMenuFilters();
+  loadCart();
   setupCartControls();
   setupDemoInteractions();
 }
