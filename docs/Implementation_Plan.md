@@ -5,7 +5,7 @@ Desenvolver a plataforma **Fast Lanche** em **HTML, CSS e JavaScript ES6+**, seg
 
 ---
 
-# Fase 0 — Estrutura Base
+# Fase 0 — Estrutura Base ✅
 ## Objetivos
 - Criar a estrutura inicial do projeto.
 - Configurar a arquitetura de pastas.
@@ -78,7 +78,7 @@ Implementar:
 
 ---
 
-# Fase 4 — Carrinho
+# Fase 4 — Carrinho ✅
 **Arquivo:** `cart.js`
 
 Implementar:

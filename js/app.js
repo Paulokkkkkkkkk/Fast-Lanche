@@ -1,4 +1,6 @@
 // app.js - cardapio dinamico, busca e filtros
+import { addToCart, setupCartControls } from './cart.js';
+
 const menuContainer = document.getElementById('menu-items');
 const searchInput = document.getElementById('search-input');
 const categoryFilter = document.getElementById('category-filter');
@@ -209,7 +211,11 @@ function setupDemoInteractions(){
     if(!(target instanceof HTMLElement)) return;
 
     if(target.matches('.add-to-cart')){
-      showToast('Item selecionado. A logica do carrinho entra na Fase 4.');
+      const itemId = Number(target.dataset.id);
+      const selectedItem = menuItems.find(item => item.id === itemId);
+
+      addToCart(selectedItem);
+      showToast('Item adicionado ao carrinho.');
     }
   });
 
@@ -224,6 +230,7 @@ function setupDemoInteractions(){
 function setup(){
   updateVisibleItems();
   setupMenuFilters();
+  setupCartControls();
   setupDemoInteractions();
 }
 
