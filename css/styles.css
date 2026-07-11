@@ -533,6 +533,14 @@ a{
   color:var(--cinza-500);
 }
 
+.form-feedback[data-status="success"]{
+  color:var(--verde);
+}
+
+.form-feedback[data-status="error"]{
+  color:var(--vermelho);
+}
+
 .split-layout,
 .feedback-layout{
   display:grid;

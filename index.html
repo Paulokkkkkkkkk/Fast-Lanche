@@ -112,15 +112,15 @@
           <form id="checkout-form" class="form-grid">
             <label class="field" for="checkout-name">
               <span>Nome completo</span>
-              <input id="checkout-name" name="name" type="text" autocomplete="name" required>
+              <input id="checkout-name" name="name" type="text" autocomplete="name" minlength="3" required>
             </label>
             <label class="field" for="checkout-phone">
               <span>Telefone</span>
-              <input id="checkout-phone" name="phone" type="tel" autocomplete="tel" placeholder="(00) 00000-0000" required>
+              <input id="checkout-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" minlength="10" maxlength="15" placeholder="(00) 00000-0000" required>
             </label>
             <label class="field field-full" for="checkout-address">
               <span>Endereco de entrega</span>
-              <input id="checkout-address" name="address" type="text" autocomplete="street-address" required>
+              <input id="checkout-address" name="address" type="text" autocomplete="street-address" minlength="8" required>
             </label>
             <label class="field" for="checkout-payment">
               <span>Pagamento</span>
@@ -133,7 +133,7 @@
             </label>
             <label class="field" for="checkout-document">
               <span>CPF/CNPJ opcional</span>
-              <input id="checkout-document" name="document" type="text">
+              <input id="checkout-document" name="document" type="text" inputmode="numeric" minlength="11" maxlength="18">
             </label>
             <div class="field-full form-actions">
               <button class="button button-primary" type="submit">Finalizar pedido</button>

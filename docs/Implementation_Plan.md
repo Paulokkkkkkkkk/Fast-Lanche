@@ -114,7 +114,7 @@ Utilizar `try/catch`.
 
 ---
 
-# Fase 6 — Checkout
+# Fase 6 — Checkout ✅
 **Arquivo:** `checkout.js`
 
 Implementar:

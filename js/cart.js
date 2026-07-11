@@ -201,6 +201,14 @@ function removeItem(itemId){
   return cart;
 }
 
+function clearCart(){
+  cart.items = [];
+  calculateCartTotals();
+  saveCart();
+  renderCart();
+  return cart;
+}
+
 function getSubtotal(){
   return cart.subtotal;
 }
@@ -307,6 +315,7 @@ export {
   addToCart,
   calculateCartTotals,
   cart,
+  clearCart,
   decrementItem,
   getSubtotal,
   incrementItem,
