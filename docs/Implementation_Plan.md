@@ -149,7 +149,7 @@ Implementar:
 
 ---
 
-# Fase 9 — Integração
+# Fase 9 — Integração ✅
 Integrar:
 - Cardápio
 - Carrinho
