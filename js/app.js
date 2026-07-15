@@ -1,6 +1,7 @@
 // app.js - cardapio dinamico, busca e filtros
 import { addToCart, loadCart, setupCartControls } from './cart.js';
 import { setupCheckout } from './checkout.js';
+import { setupBooking } from './booking.js';
 
 const menuContainer = document.getElementById('menu-items');
 const searchInput = document.getElementById('search-input');
@@ -220,7 +221,7 @@ function setupDemoInteractions(){
     }
   });
 
-  document.querySelectorAll('form:not(#checkout-form)').forEach(form =>{
+  document.querySelectorAll('form:not(#checkout-form):not(#booking-form)').forEach(form =>{
     form.addEventListener('submit', event =>{
       event.preventDefault();
       showToast('Formulario pronto para a proxima fase.');
@@ -234,6 +235,7 @@ function setup(){
   loadCart();
   setupCartControls();
   setupCheckout();
+  setupBooking();
   setupDemoInteractions();
 }
 
