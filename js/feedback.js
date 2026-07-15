@@ -91,10 +91,134 @@ function getAverage(){
   return total / feedbacks.length;
 }
 
+const sessionFeedbacks = new Set();
+
+function renderFeedbacks(){
+  const listEl = document.getElementById('feedback-list');
+  const avgEl = document.getElementById('average-rating');
+  if(!listEl) return;
+
+  listEl.replaceChildren();
+
+  if(!feedbacks.length){
+    const emptyItem = document.createElement('article');
+    emptyItem.className = 'feedback-item empty-state';
+    
+    const text = document.createElement('p');
+    text.textContent = 'Nenhum feedback cadastrado ainda. Seja o primeiro a avaliar!';
+    
+    emptyItem.appendChild(text);
+    listEl.appendChild(emptyItem);
+  } else {
+    // Ordenar por data decrescente (mais recente primeiro)
+    const sortedFeedbacks = [...feedbacks].sort((a, b) => {
+      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+    });
+
+    sortedFeedbacks.forEach(fb => {
+      const article = document.createElement('article');
+      article.className = 'feedback-item';
+
+      const stars = '★'.repeat(fb.rating) + '☆'.repeat(5 - fb.rating);
+      
+      const header = document.createElement('strong');
+      header.textContent = `${fb.name} — ${stars}`;
+
+      const comment = document.createElement('p');
+      comment.textContent = fb.comment;
+
+      const dateEl = document.createElement('small');
+      dateEl.style.display = 'block';
+      dateEl.style.color = 'var(--cinza-500)';
+      dateEl.style.marginTop = '0.25rem';
+      
+      try {
+        const dateObj = new Date(fb.timestamp);
+        dateEl.textContent = dateObj.toLocaleString('pt-BR');
+      } catch (e) {
+        dateEl.textContent = fb.timestamp;
+      }
+
+      article.append(header, comment, dateEl);
+      listEl.appendChild(article);
+    });
+  }
+
+  if(avgEl){
+    const avg = getAverage();
+    avgEl.textContent = avg.toFixed(1).replace('.', ',');
+  }
+}
+
+function setFeedbackMessage(element, message, status = 'info'){
+  if(!element) return;
+  element.textContent = message;
+  element.dataset.status = status;
+}
+
+function setupFeedback(){
+  loadFeedbacks();
+  renderFeedbacks();
+
+  const form = document.getElementById('feedback-form');
+  const messageEl = document.getElementById('feedback-message');
+  
+  if(!form) return;
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const name = (formData.get('name') || '').trim();
+    const rating = Number(formData.get('rating'));
+    const comment = (formData.get('comment') || '').trim();
+
+    if(!name){
+      setFeedbackMessage(messageEl, 'Por favor, insira seu nome.', 'error');
+      return;
+    }
+
+    if(Number.isNaN(rating) || rating < 1 || rating > 5){
+      setFeedbackMessage(messageEl, 'A nota deve ser entre 1 e 5.', 'error');
+      return;
+    }
+
+    if(comment.length < 10){
+      setFeedbackMessage(messageEl, 'O comentário deve conter pelo menos 10 caracteres.', 'error');
+      return;
+    }
+
+    // Prevenção de duplicidade na mesma sessão
+    const feedbackKey = `${name.toLowerCase()}-${rating}-${comment.toLowerCase()}`;
+    if(sessionFeedbacks.has(feedbackKey)){
+      setFeedbackMessage(messageEl, 'Você já enviou este feedback nesta sessão.', 'error');
+      return;
+    }
+
+    const newFeedback = {
+      name: name || 'Cliente',
+      rating: rating,
+      comment: comment
+    };
+
+    const success = addFeedback(newFeedback);
+
+    if(success){
+      sessionFeedbacks.add(feedbackKey);
+      setFeedbackMessage(messageEl, 'Feedback enviado com sucesso!', 'success');
+      form.reset();
+      renderFeedbacks();
+    } else {
+      setFeedbackMessage(messageEl, 'Não foi possível salvar o feedback.', 'error');
+    }
+  });
+}
+
 export {
   addFeedback,
   feedbacks,
   getAverage,
   loadFeedbacks,
-  saveFeedbacks
+  saveFeedbacks,
+  setupFeedback
 };

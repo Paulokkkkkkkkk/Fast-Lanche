@@ -126,7 +126,7 @@ Implementar:
 
 ---
 
-# Fase 7 — Agendamento
+# Fase 7 — Agendamento ✅
 **Arquivo:** `booking.js`
 
 Implementar:
@@ -138,7 +138,7 @@ Implementar:
 
 ---
 
-# Fase 8 — Feedbacks
+# Fase 8 — Feedbacks ✅
 **Arquivo:** `feedback.js`
 
 Implementar:
