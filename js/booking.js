@@ -1,9 +1,11 @@
 // booking.js - lógica de reservas de mesas e persistência local
+import { openModal, closeModal, showToast, setButtonLoading } from './app.js';
+
 const BOOKINGS_STORAGE_KEY = 'fastlanche_bookings';
 
 const bookingRequest = {
-  customerName: '', // mantido para compatibilidade com o PRD/esqueleto original
-  phone: '',        // mantido para compatibilidade com o PRD/esqueleto original
+  customerName: '',
+  phone: '',
   date: '',
   time: '',
   guests: 2,
@@ -96,7 +98,6 @@ function validateBooking(dateStr, timeStr, people) {
 }
 
 function submitBooking(payload) {
-  // Função mantida para compatibilidade e log
   console.log('Reserva enviada:', payload);
 
   const newBooking = {
@@ -118,15 +119,59 @@ function setFeedback(element, message, status = 'info') {
   element.dataset.status = status;
 }
 
+function showBookingConfirmationModal(booking) {
+  const formattedDate = formatDateBR(booking.date);
+  const peopleText = booking.guests === 1 ? 'pessoa' : 'pessoas';
+
+  const bodyContent = document.createElement('div');
+  bodyContent.style.display = 'grid';
+  bodyContent.style.gap = '1rem';
+
+  const successIcon = document.createElement('div');
+  successIcon.style.cssText = 'font-size:2.5rem;text-align:center;line-height:1;';
+  successIcon.textContent = '✅';
+
+  const summary = document.createElement('div');
+  summary.style.cssText = 'display:grid;gap:.4rem;';
+
+  const dateInfo = document.createElement('p');
+  dateInfo.innerHTML = `<strong>Data:</strong> ${formattedDate}`;
+
+  const timeInfo = document.createElement('p');
+  timeInfo.innerHTML = `<strong>Horário:</strong> ${booking.time}`;
+
+  const guestsInfo = document.createElement('p');
+  guestsInfo.innerHTML = `<strong>${booking.guests} ${peopleText}</strong>`;
+
+  const confirmationMsg = document.createElement('p');
+  confirmationMsg.style.cssText = 'color:var(--verde);font-weight:700;padding-top:.5rem;border-top:1px solid var(--cinza-200);';
+  confirmationMsg.textContent = 'Sua reserva foi confirmada! Aguardamos sua visita.';
+
+  summary.append(dateInfo, timeInfo, guestsInfo, confirmationMsg);
+  bodyContent.append(successIcon, summary);
+
+  openModal({
+    title: 'Reserva Confirmada!',
+    bodyContent,
+    actions: [
+      {
+        label: 'Fechar',
+        variant: 'button-primary',
+        onClick: closeModal
+      }
+    ]
+  });
+}
+
 function setupBooking() {
   loadBookings();
 
   const form = document.getElementById('booking-form');
   const dateInput = document.getElementById('booking-date');
   const feedbackEl = document.getElementById('booking-feedback');
+  const submitBtn = form?.querySelector('button[type="submit"]');
 
   if (dateInput) {
-    // Restringe nativamente no HTML a seleção de datas anteriores à atual
     dateInput.min = getLocalDateString();
   }
 
@@ -145,6 +190,7 @@ function setupBooking() {
     bookingRequest.guests = Number(guestsVal) || 2;
     bookingRequest.status = 'processing';
 
+    setButtonLoading(submitBtn, true, 'Confirmar reserva');
     setFeedback(feedbackEl, 'Processando reserva...', 'info');
 
     const validation = validateBooking(dateVal, timeVal, guestsVal);
@@ -152,6 +198,8 @@ function setupBooking() {
     if (!validation.isValid) {
       bookingRequest.status = 'failed';
       setFeedback(feedbackEl, validation.errors[0], 'error');
+      showToast(validation.errors[0], 'error');
+      setButtonLoading(submitBtn, false);
       return;
     }
 
@@ -167,7 +215,6 @@ function setupBooking() {
 
       form.reset();
 
-      // Restabelece a data mínima após o reset
       if (dateInput) {
         dateInput.min = getLocalDateString();
       }
@@ -178,10 +225,16 @@ function setupBooking() {
         `Reserva confirmada! Mesa para ${booking.guests} ${booking.guests === 1 ? 'pessoa' : 'pessoas'} em ${formattedDate} às ${booking.time}.`,
         'success'
       );
+
+      showBookingConfirmationModal(booking);
+      showToast(`Reserva para ${formattedDate} confirmada!`, 'success', 5000);
     } catch (error) {
       bookingRequest.status = 'failed';
       console.error('Erro ao realizar reserva:', error);
       setFeedback(feedbackEl, 'Erro interno ao realizar reserva. Tente novamente.', 'error');
+      showToast('Erro ao realizar reserva.', 'error');
+    } finally {
+      setButtonLoading(submitBtn, false);
     }
   });
 }

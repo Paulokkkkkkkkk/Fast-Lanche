@@ -159,7 +159,8 @@ Integrar:
 
 ---
 
-# Fase 10 — UX
+# Fase 10 — UX ✅
+Integrar:
 Adicionar:
 - Toasts
 - Modais

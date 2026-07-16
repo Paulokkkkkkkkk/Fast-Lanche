@@ -91,14 +91,14 @@ const normalizeText = value => (
     .trim()
 );
 
-function createTextElement(tagName, className, text){
+function createTextElement(tagName, className, text) {
   const element = document.createElement(tagName);
-  if(className) element.className = className;
+  if (className) element.className = className;
   element.textContent = text;
   return element;
 }
 
-function createMenuCard(item){
+function createMenuCard(item) {
   const card = document.createElement('article');
   card.className = 'menu-item';
 
@@ -127,37 +127,45 @@ function createMenuCard(item){
   return card;
 }
 
-function renderEmptyMenu(){
-  if(!menuContainer) return;
+function renderEmptyMenu() {
+  if (!menuContainer) return;
 
   const emptyMessage = document.createElement('p');
   emptyMessage.className = 'empty-state menu-empty';
-  emptyMessage.textContent = 'Nenhum item ativo encontrado para essa busca.';
 
+  const icon = document.createElement('span');
+  icon.className = 'empty-state-icon';
+  icon.textContent = '🍔';
+
+  const text = document.createElement('span');
+  text.className = 'empty-state-text';
+  text.textContent = 'Nenhum item ativo encontrado para essa busca.';
+
+  emptyMessage.append(icon, text);
   menuContainer.appendChild(emptyMessage);
 }
 
-function renderMenu(items = visibleItems){
-  if(!menuContainer) return;
+function renderMenu(items = visibleItems) {
+  if (!menuContainer) return;
 
   menuContainer.replaceChildren();
 
   const activeItems = items.filter(item => item.active);
 
-  if(!activeItems.length){
+  if (!activeItems.length) {
     renderEmptyMenu();
     return;
   }
 
-  activeItems.forEach(item =>{
+  activeItems.forEach(item => {
     menuContainer.appendChild(createMenuCard(item));
   });
 }
 
-function getFilteredMenuItems(){
+function getFilteredMenuItems() {
   const normalizedSearch = normalizeText(searchTerm);
 
-  return menuItems.filter(item =>{
+  return menuItems.filter(item => {
     const isActive = item.active;
     const matchesCategory = activeFilter === 'all' || item.category === activeFilter;
     const searchableContent = normalizeText(`${item.name} ${item.description}`);
@@ -167,71 +175,236 @@ function getFilteredMenuItems(){
   });
 }
 
-function updateVisibleItems(){
+function updateVisibleItems() {
   visibleItems = getFilteredMenuItems();
   renderMenu(visibleItems);
 }
 
-function setSearchTerm(value){
+function setSearchTerm(value) {
   searchTerm = value;
   updateVisibleItems();
 }
 
-function setActiveFilter(value){
+function setActiveFilter(value) {
   activeFilter = value || 'all';
   updateVisibleItems();
 }
 
-function setupMenuFilters(){
-  if(searchInput){
-    searchInput.addEventListener('input', event =>{
+function setupMenuFilters() {
+  if (searchInput) {
+    searchInput.addEventListener('input', event => {
       setSearchTerm(event.target.value);
     });
   }
 
-  if(categoryFilter){
-    categoryFilter.addEventListener('change', event =>{
+  if (categoryFilter) {
+    categoryFilter.addEventListener('change', event => {
       setActiveFilter(event.target.value);
     });
   }
 }
 
-function showToast(message){
+// ============================================
+// FASE 10 — UX: SISTEMA DE TOAST APRIMORADO
+// ============================================
+
+const TOAST_ICONS = {
+  success: '✓',
+  error: '✕',
+  warning: '⚠',
+  info: 'ℹ'
+};
+
+function showToast(message, type = 'info', duration = 3500) {
   const container = document.getElementById('toast-container');
-  if(!container) return;
+  if (!container) return;
 
   const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = message;
+  toast.className = `toast ${type}`;
+
+  const icon = document.createElement('span');
+  icon.className = 'toast-icon';
+  icon.textContent = TOAST_ICONS[type] || TOAST_ICONS.info;
+
+  const msg = document.createElement('span');
+  msg.className = 'toast-message';
+  msg.textContent = message;
+
+  const dismiss = document.createElement('button');
+  dismiss.className = 'toast-dismiss';
+  dismiss.type = 'button';
+  dismiss.setAttribute('aria-label', 'Fechar notificacao');
+  dismiss.textContent = '✕';
+  dismiss.addEventListener('click', () => toast.remove());
+
+  toast.append(icon, msg, dismiss);
   container.appendChild(toast);
 
-  setTimeout(() => toast.remove(), 3000);
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(24px)';
+      toast.style.transition = 'opacity .3s, transform .3s';
+      setTimeout(() => toast.remove(), 300);
+    }
+  }, duration);
 }
 
-function setupDemoInteractions(){
-  document.body.addEventListener('click', event =>{
-    const target = event.target;
-    if(!(target instanceof HTMLElement)) return;
+// ============================================
+// FASE 10 — UX: SISTEMA DE MODAL
+// ============================================
 
-    if(target.matches('.add-to-cart')){
+const modalOverlay = document.getElementById('modal-overlay');
+const modalTitle = document.getElementById('modal-title');
+const modalBody = document.getElementById('modal-body');
+const modalActions = document.getElementById('modal-actions');
+const modalClose = document.getElementById('modal-close');
+
+function openModal({ title, bodyContent, actions = [] }) {
+  if (!modalOverlay || !modalTitle || !modalBody || !modalActions) return;
+
+  modalTitle.textContent = title || '';
+  modalBody.replaceChildren();
+
+  if (typeof bodyContent === 'string') {
+    const p = document.createElement('p');
+    p.textContent = bodyContent;
+    modalBody.appendChild(p);
+  } else if (bodyContent instanceof HTMLElement) {
+    modalBody.appendChild(bodyContent);
+  } else if (Array.isArray(bodyContent)) {
+    bodyContent.forEach(el => {
+      if (el instanceof HTMLElement) modalBody.appendChild(el);
+    });
+  }
+
+  modalActions.replaceChildren();
+  actions.forEach(action => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `button ${action.variant || 'button-primary'}`;
+    btn.textContent = action.label || '';
+    if (action.onClick) btn.addEventListener('click', action.onClick);
+    modalActions.appendChild(btn);
+  });
+
+  modalOverlay.classList.remove('closing');
+  modalOverlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  if (!modalOverlay) return;
+
+  modalOverlay.classList.add('closing');
+  modalOverlay.classList.remove('active');
+  document.body.style.overflow = '';
+
+  setTimeout(() => {
+    modalOverlay.classList.remove('closing');
+  }, 300);
+}
+
+function setupModalControls() {
+  if (modalClose) {
+    modalClose.addEventListener('click', closeModal);
+  }
+
+  if (modalOverlay) {
+    modalOverlay.addEventListener('click', event => {
+      if (event.target === modalOverlay) closeModal();
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && modalOverlay.classList.contains('active')) {
+        closeModal();
+      }
+    });
+  }
+}
+
+// ============================================
+// FASE 10 — UX: LOADING SPINNER
+// ============================================
+
+function createSpinner() {
+  const spinner = document.createElement('span');
+  spinner.className = 'spinner';
+  spinner.setAttribute('aria-hidden', 'true');
+  return spinner;
+}
+
+function setButtonLoading(button, isLoading, originalText) {
+  if (!button) return;
+
+  if (isLoading) {
+    button.disabled = true;
+    button.classList.add('button-loading');
+    button.dataset.originalText = originalText || button.textContent;
+    button.textContent = '';
+    button.appendChild(createSpinner());
+    const loadingText = document.createTextNode(' Processando...');
+    button.appendChild(loadingText);
+  } else {
+    button.disabled = false;
+    button.classList.remove('button-loading');
+    const original = button.dataset.originalText || 'Finalizar pedido';
+    button.textContent = original;
+  }
+}
+
+// ============================================
+// FASE 10 — UX: SKELETON LOADING
+// ============================================
+
+function showSkeletonLoader(container, count = 6) {
+  if (!container) return;
+
+  const grid = document.createElement('div');
+  grid.className = 'skeleton-grid';
+
+  for (let i = 0; i < count; i++) {
+    const card = document.createElement('div');
+    card.className = 'skeleton-card';
+    grid.appendChild(card);
+  }
+
+  container.replaceChildren(grid);
+}
+
+// ============================================
+// SETUP PRINCIPAL
+// ============================================
+
+function setupDemoInteractions() {
+  document.body.addEventListener('click', event => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    if (target.matches('.add-to-cart')) {
       const itemId = Number(target.dataset.id);
       const selectedItem = menuItems.find(item => item.id === itemId);
 
       addToCart(selectedItem);
-      showToast('Item adicionado ao carrinho.');
+      showToast('Item adicionado ao carrinho.', 'success');
     }
   });
 
-  document.querySelectorAll('form:not(#checkout-form):not(#booking-form):not(#feedback-form)').forEach(form =>{
-    form.addEventListener('submit', event =>{
+  document.querySelectorAll('form:not(#checkout-form):not(#booking-form):not(#feedback-form)').forEach(form => {
+    form.addEventListener('submit', event => {
       event.preventDefault();
-      showToast('Formulario pronto para a proxima fase.');
+      showToast('Formulario pronto para a proxima fase.', 'info');
     });
   });
 }
 
-function setup(){
-  updateVisibleItems();
+function setup() {
+  showSkeletonLoader(menuContainer, 6);
+
+  setTimeout(() => {
+    updateVisibleItems();
+  }, 400);
+
   setupMenuFilters();
   loadCart();
   setupCartControls();
@@ -239,17 +412,24 @@ function setup(){
   setupBooking();
   setupFeedback();
   setupDemoInteractions();
+  setupModalControls();
 }
 
 window.addEventListener('DOMContentLoaded', setup);
 
 export {
   activeFilter,
+  closeModal,
+  createSpinner,
+  formatCurrency,
   menuItems,
+  openModal,
   renderMenu,
   searchTerm,
   setActiveFilter,
+  setButtonLoading,
   setSearchTerm,
+  showToast,
   updateVisibleItems,
   visibleItems
 };
