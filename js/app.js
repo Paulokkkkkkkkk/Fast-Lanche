@@ -398,6 +398,40 @@ function setupDemoInteractions() {
   });
 }
 
+function setupNavToggle() {
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('main-nav');
+
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener('click', () => {
+    const isOpen = nav.classList.toggle('open');
+    toggle.classList.toggle('active');
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    toggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+  });
+
+  // Fecha o menu ao clicar em um link
+  nav.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      nav.classList.remove('open');
+      toggle.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menu');
+    });
+  });
+
+  // Fecha o menu ao pressionar Escape
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && nav.classList.contains('open')) {
+      nav.classList.remove('open');
+      toggle.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menu');
+    }
+  });
+}
+
 function setup() {
   showSkeletonLoader(menuContainer, 6);
 
@@ -405,6 +439,7 @@ function setup() {
     updateVisibleItems();
   }, 400);
 
+  setupNavToggle();
   setupMenuFilters();
   loadCart();
   setupCartControls();

@@ -170,7 +170,7 @@ Adicionar:
 
 ---
 
-# Fase 11 — Responsividade
+# Fase 11 — Responsividade ✅
 Testar:
 - Desktop
 - Tablet

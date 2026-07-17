@@ -11,8 +11,15 @@
 <body>
   <header class="site-header">
     <div class="container header-layout">
-      <a class="brand" href="#top" aria-label="Fast Lanche - inicio">Fast Lanche</a>
-      <nav class="main-nav" aria-label="Navegacao principal">
+      <div class="header-row">
+        <a class="brand" href="#top" aria-label="Fast Lanche - inicio">Fast Lanche</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
+      </div>
+      <nav class="main-nav" id="main-nav" aria-label="Navegacao principal">
         <a href="#menu">Cardapio</a>
         <a href="#cart">Carrinho</a>
         <a href="#checkout">Checkout</a>
