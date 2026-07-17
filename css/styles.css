@@ -384,6 +384,58 @@ a {
   outline: 3px solid rgba(230, 57, 70, .16);
 }
 
+/* --- Input Range customizado --- */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--cinza-200);
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  min-height: auto;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--branco);
+  border-radius: 50%;
+  background: var(--vermelho);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(22, 22, 22, .2);
+  transition: transform .15s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--branco);
+  border-radius: 50%;
+  background: var(--vermelho);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(22, 22, 22, .2);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--cinza-200);
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1063,7 +1115,6 @@ button:disabled .spinner {
     padding-block: var(--space-4);
   }
 
-  /* Evita que o hero fique com muito padding vertical em telas menores */
   .hero-layout {
     padding-block: var(--space-4);
   }

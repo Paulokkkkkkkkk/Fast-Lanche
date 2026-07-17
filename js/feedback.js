@@ -212,6 +212,15 @@ function setupFeedback() {
 
   const form = document.getElementById('feedback-form');
   const messageEl = document.getElementById('feedback-message');
+  const ratingInput = document.getElementById('feedback-rating');
+  const ratingValue = document.getElementById('rating-value');
+
+  // Live update do valor do range rating
+  if (ratingInput && ratingValue) {
+    ratingInput.addEventListener('input', () => {
+      ratingValue.textContent = ratingInput.value;
+    });
+  }
 
   if (!form) return;
 
@@ -263,6 +272,8 @@ function setupFeedback() {
       setFeedbackMessage(messageEl, 'Feedback enviado com sucesso!', 'success');
       showToast('Feedback enviado com sucesso!', 'success');
       form.reset();
+      // Atualiza o texto do rating para refletir o valor resetado (5)
+      if (ratingValue) ratingValue.textContent = '5';
       renderFeedbacks();
     } else {
       setFeedbackMessage(messageEl, 'Não foi possível salvar o feedback.', 'error');

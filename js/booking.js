@@ -81,13 +81,13 @@ function validateBooking(dateStr, timeStr, people) {
 
   if (!timeStr) {
     errors.push('Selecione um horário para a reserva.');
-  } else if (timeStr < '10:00' || timeStr > '23:00') {
-    errors.push('O horário deve estar entre 10:00 e 23:00.');
+  } else if (timeStr < '11:00' || timeStr > '23:00') {
+    errors.push('O horário deve estar entre 11:00 e 23:00.');
   }
 
   const guestsNum = Number(people);
-  if (!people || Number.isNaN(guestsNum) || guestsNum < 1 || guestsNum > 20) {
-    errors.push('O número de pessoas deve ser de 1 a 20.');
+  if (!people || Number.isNaN(guestsNum) || guestsNum < 1 || guestsNum > 12) {
+    errors.push('O número de pessoas deve ser de 1 a 12.');
   }
 
   bookingRequest.errors = errors;

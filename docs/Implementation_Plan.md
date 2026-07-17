@@ -178,7 +178,7 @@ Testar:
 
 ---
 
-# Fase 12 — Testes
+# Fase 12 — Testes ✅
 Validar todos os critérios de aceite definidos no PRD.
 
 ---

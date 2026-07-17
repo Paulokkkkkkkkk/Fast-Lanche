@@ -12,11 +12,9 @@ const checkoutData = {
   customerName: '',
   document: '',
   phone: '',
-  email: '',
   address: '',
   orderNumber: '',
   paymentMethod: '',
-  notes: '',
   isPaymentPending: false,
   paymentStatus: 'idle'
 };
