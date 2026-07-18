@@ -1,5 +1,6 @@
 // booking.js - lógica de reservas de mesas e persistência local
-import { openModal, closeModal, showToast, setButtonLoading } from './app.js';
+import { openModal, closeModal, showToast } from './ui.js';
+import { setButtonLoading } from './ui.js';
 
 const BOOKINGS_STORAGE_KEY = 'fastlanche_bookings';
 

@@ -1,5 +1,5 @@
 // feedback.js - camada de dados e persistencia de avaliacoes
-import { openModal, closeModal, showToast } from './app.js';
+import { openModal, closeModal, showToast } from './ui.js';
 
 const FEEDBACKS_STORAGE_KEY = 'fastlanche_feedbacks';
 

@@ -1434,6 +1434,115 @@ button:disabled .spinner {
   }
 }
 
+/* ============================================
+   FASE 15 — PERSONALIZAÇÃO DE PRODUTOS
+   ============================================ */
+
+.customization-body {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.customization-flavors-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.customization-flavor-label,
+.customization-extra-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--radius);
+  background: var(--branco);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  font-size: 0.9rem;
+}
+
+.customization-flavor-label:hover,
+.customization-extra-label:hover {
+  border-color: var(--preto);
+}
+
+.customization-flavor-label input[type="checkbox"],
+.customization-extra-label input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--vermelho);
+  cursor: pointer;
+}
+
+.customization-flavor-info {
+  font-weight: 600;
+}
+
+.customization-summary {
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  background: var(--cinza-50);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.customization-extras {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.customization-observation {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--radius);
+  padding: 0.7rem 0.8rem;
+  color: var(--preto);
+  background: var(--branco);
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.customization-observation:focus {
+  border-color: var(--vermelho);
+  outline: 3px solid rgba(230, 57, 70, 0.16);
+}
+
+.customization-price {
+  font-size: 1.3rem;
+  font-weight: 900;
+  text-align: right;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--cinza-200);
+}
+
+/* Resumo de personalizacao no carrinho */
+.cart-item-customization {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.35rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  background: var(--cinza-50);
+  font-size: 0.8rem;
+  color: var(--cinza-500);
+  line-height: 1.4;
+}
+
+.cart-item-customization span {
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .customization-flavors-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- Ajuste de toque em dispositivos touch --- */
 @media (hover:none) and (pointer:coarse) {
 

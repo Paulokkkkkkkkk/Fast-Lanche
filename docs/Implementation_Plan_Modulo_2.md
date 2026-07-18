@@ -321,7 +321,7 @@ Executar:
 
 ---
 
-# FASE 14 — EVOLUÇÃO E ORGANIZAÇÃO DO CARDÁPIO
+# FASE 14 — EVOLUÇÃO E ORGANIZAÇÃO DO CARDÁPIO ✅
 
 ## Objetivo
 
@@ -379,7 +379,7 @@ Implementar:
 
 ---
 
-# FASE 15 — SISTEMA DE PRODUTOS PERSONALIZÁVEIS
+# FASE 15 — SISTEMA DE PRODUTOS PERSONALIZÁVEIS ✅
 
 ## Objetivo
 
@@ -471,7 +471,7 @@ Adicionar:
 
 Cada produto deve apresentar:
 
-- Imagem.
+- Imagem (Gif Animado).
 - Nome.
 - Descrição.
 - Preço.

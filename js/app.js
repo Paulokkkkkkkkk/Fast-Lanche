@@ -3,17 +3,13 @@ import { addToCart, loadCart, setupCartControls } from './cart.js';
 import { setupCheckout } from './checkout.js';
 import { setupBooking } from './booking.js';
 import { setupFeedback } from './feedback.js';
+import { openCustomizationModal } from './product-customization.js';
+import { CUSTOMIZATION_TYPES } from './constants.js';
+import { formatCurrency, showToast, openModal, closeModal, createSpinner, setButtonLoading } from './ui.js';
 
 const menuContainer = document.getElementById('menu-items');
 const searchInput = document.getElementById('search-input');
 const categoryFilter = document.getElementById('category-filter');
-
-const CUSTOMIZATION_TYPES = {
-  HALF_HALF: 'half_half',
-  REMOVE_INGREDIENTS: 'remove_ingredients',
-  OBSERVATIONS: 'observations',
-  ADD_EXTRAS: 'add_extras'
-};
 
 const menuItems = [
   // =========================================================================
@@ -327,17 +323,39 @@ const menuItems = [
     category: 'Bebidas',
     maxQuantity: 20,
     active: true,
-    customization: null
+    customization: {
+      type: CUSTOMIZATION_TYPES.OBSERVATIONS,
+      extras: [
+        { name: 'Coca-Cola', price: 0 },
+        { name: 'Coca-Cola Zero', price: 0 },
+        { name: 'Guaraná Antarctica', price: 0 },
+        { name: 'Fanta Laranja', price: 0 },
+        { name: 'Fanta Uva', price: 0 },
+        { name: 'Sprite', price: 0 },
+        { name: 'Pepsi', price: 0 },
+        { name: 'Pepsi Twist', price: 0 }
+      ]
+    }
   },
   {
     id: 19,
     name: 'Refrigerante 2L',
-    description: 'Garrafa 2 litros. Coca-Cola ou Guaraná.',
+    description: 'Garrafa 2 litros. Coca-Cola, Guaraná, Fanta ou Sprite.',
     price: 12.0,
     category: 'Bebidas',
     maxQuantity: 10,
     active: true,
-    customization: null
+    customization: {
+      type: CUSTOMIZATION_TYPES.OBSERVATIONS,
+      extras: [
+        { name: 'Coca-Cola', price: 0 },
+        { name: 'Coca-Cola Zero', price: 0 },
+        { name: 'Guaraná Antarctica', price: 0 },
+        { name: 'Fanta Laranja', price: 0 },
+        { name: 'Fanta Uva', price: 0 },
+        { name: 'Sprite', price: 0 }
+      ]
+    }
   },
   {
     id: 20,
@@ -521,10 +539,6 @@ let visibleItems = menuItems.filter(item => item.active);
 let activeFilter = 'all';
 let searchTerm = '';
 
-const formatCurrency = value => (
-  value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-);
-
 const normalizeText = value => (
   value
     .toString()
@@ -648,155 +662,6 @@ function setupMenuFilters() {
 }
 
 // ============================================
-// FASE 10 — UX: SISTEMA DE TOAST APRIMORADO
-// ============================================
-
-const TOAST_ICONS = {
-  success: '✓',
-  error: '✕',
-  warning: '⚠',
-  info: 'ℹ'
-};
-
-function showToast(message, type = 'info', duration = 3500) {
-  const container = document.getElementById('toast-container');
-  if (!container) return;
-
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-
-  const icon = document.createElement('span');
-  icon.className = 'toast-icon';
-  icon.textContent = TOAST_ICONS[type] || TOAST_ICONS.info;
-
-  const msg = document.createElement('span');
-  msg.className = 'toast-message';
-  msg.textContent = message;
-
-  const dismiss = document.createElement('button');
-  dismiss.className = 'toast-dismiss';
-  dismiss.type = 'button';
-  dismiss.setAttribute('aria-label', 'Fechar notificacao');
-  dismiss.textContent = '✕';
-  dismiss.addEventListener('click', () => toast.remove());
-
-  toast.append(icon, msg, dismiss);
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    if (toast.parentNode) {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(24px)';
-      toast.style.transition = 'opacity .3s, transform .3s';
-      setTimeout(() => toast.remove(), 300);
-    }
-  }, duration);
-}
-
-// ============================================
-// FASE 10 — UX: SISTEMA DE MODAL
-// ============================================
-
-const modalOverlay = document.getElementById('modal-overlay');
-const modalTitle = document.getElementById('modal-title');
-const modalBody = document.getElementById('modal-body');
-const modalActions = document.getElementById('modal-actions');
-const modalClose = document.getElementById('modal-close');
-
-function openModal({ title, bodyContent, actions = [] }) {
-  if (!modalOverlay || !modalTitle || !modalBody || !modalActions) return;
-
-  modalTitle.textContent = title || '';
-  modalBody.replaceChildren();
-
-  if (typeof bodyContent === 'string') {
-    const p = document.createElement('p');
-    p.textContent = bodyContent;
-    modalBody.appendChild(p);
-  } else if (bodyContent instanceof HTMLElement) {
-    modalBody.appendChild(bodyContent);
-  } else if (Array.isArray(bodyContent)) {
-    bodyContent.forEach(el => {
-      if (el instanceof HTMLElement) modalBody.appendChild(el);
-    });
-  }
-
-  modalActions.replaceChildren();
-  actions.forEach(action => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = `button ${action.variant || 'button-primary'}`;
-    btn.textContent = action.label || '';
-    if (action.onClick) btn.addEventListener('click', action.onClick);
-    modalActions.appendChild(btn);
-  });
-
-  modalOverlay.classList.remove('closing');
-  modalOverlay.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-  if (!modalOverlay) return;
-
-  modalOverlay.classList.add('closing');
-  modalOverlay.classList.remove('active');
-  document.body.style.overflow = '';
-
-  setTimeout(() => {
-    modalOverlay.classList.remove('closing');
-  }, 300);
-}
-
-function setupModalControls() {
-  if (modalClose) {
-    modalClose.addEventListener('click', closeModal);
-  }
-
-  if (modalOverlay) {
-    modalOverlay.addEventListener('click', event => {
-      if (event.target === modalOverlay) closeModal();
-    });
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && modalOverlay.classList.contains('active')) {
-        closeModal();
-      }
-    });
-  }
-}
-
-// ============================================
-// FASE 10 — UX: LOADING SPINNER
-// ============================================
-
-function createSpinner() {
-  const spinner = document.createElement('span');
-  spinner.className = 'spinner';
-  spinner.setAttribute('aria-hidden', 'true');
-  return spinner;
-}
-
-function setButtonLoading(button, isLoading, originalText) {
-  if (!button) return;
-
-  if (isLoading) {
-    button.disabled = true;
-    button.classList.add('button-loading');
-    button.dataset.originalText = originalText || button.textContent;
-    button.textContent = '';
-    button.appendChild(createSpinner());
-    const loadingText = document.createTextNode(' Processando...');
-    button.appendChild(loadingText);
-  } else {
-    button.disabled = false;
-    button.classList.remove('button-loading');
-    const original = button.dataset.originalText || 'Finalizar pedido';
-    button.textContent = original;
-  }
-}
-
-// ============================================
 // FASE 10 — UX: SKELETON LOADING
 // ============================================
 
@@ -828,8 +693,9 @@ function setupDemoInteractions() {
       const itemId = Number(target.dataset.id);
       const selectedItem = menuItems.find(item => item.id === itemId);
 
-      addToCart(selectedItem);
-      showToast('Item adicionado ao carrinho.', 'success');
+      if (selectedItem) {
+        openCustomizationModal(selectedItem);
+      }
     }
   });
 
@@ -854,7 +720,6 @@ function setupNavToggle() {
     toggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
   });
 
-  // Fecha o menu ao clicar em um link
   nav.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
       nav.classList.remove('open');
@@ -864,7 +729,6 @@ function setupNavToggle() {
     });
   });
 
-  // Fecha o menu ao pressionar Escape
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && nav.classList.contains('open')) {
       nav.classList.remove('open');
@@ -890,7 +754,6 @@ function setup() {
   setupBooking();
   setupFeedback();
   setupDemoInteractions();
-  setupModalControls();
 }
 
 window.addEventListener('DOMContentLoaded', setup);

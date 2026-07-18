@@ -60,7 +60,8 @@ function getSerializableCart() {
       name: item.name,
       price: item.price,
       quantity: item.quantity,
-      maxQuantity: item.maxQuantity
+      maxQuantity: item.maxQuantity,
+      _customization: item._customization || null
     })),
     subtotal: cart.subtotal,
     deliveryFee: cart.deliveryFee,
@@ -98,7 +99,8 @@ function normalizeStoredItem(item) {
     name: item.name,
     price: Math.max(Number(item.price) || 0, 0),
     quantity: normalizeQuantity(Number(item.quantity), maxQuantity),
-    maxQuantity
+    maxQuantity,
+    _customization: item._customization || null
   };
 }
 
@@ -153,7 +155,8 @@ function addToCart(item) {
       name: item.name,
       price: Number(item.price) || 0,
       quantity: 1,
-      maxQuantity: item.maxQuantity || 99
+      maxQuantity: item.maxQuantity || 99,
+      _customization: item._customization || null
     });
   }
 
@@ -231,6 +234,44 @@ function renderEmptyCart() {
   cartItemsContainer.appendChild(emptyItem);
 }
 
+function createCustomizationSummary(item) {
+  if (!item._customization) return null;
+
+  const summary = document.createElement('div');
+  summary.className = 'cart-item-customization';
+
+  const cust = item._customization;
+
+  if (cust.type === 'half_half') {
+    const parts = [];
+    parts.push(`Meio ${cust.flavor1}`);
+    if (cust.flavor2) parts.push(`Meio ${cust.flavor2}`);
+    const p = document.createElement('span');
+    p.textContent = parts.join(' + ');
+    summary.appendChild(p);
+  }
+
+  if (cust.type === 'remove_ingredients' && cust.removedIngredients && cust.removedIngredients.length > 0) {
+    const removed = document.createElement('span');
+    removed.textContent = `Sem: ${cust.removedIngredients.join(', ')}`;
+    summary.appendChild(removed);
+  }
+
+  if (cust.extras && cust.extras.length > 0) {
+    const extrasText = document.createElement('span');
+    extrasText.textContent = `Adicionais: ${cust.extras.map(e => e.name).join(', ')}`;
+    summary.appendChild(extrasText);
+  }
+
+  if (cust.observation) {
+    const obs = document.createElement('span');
+    obs.textContent = `Obs: ${cust.observation}`;
+    summary.appendChild(obs);
+  }
+
+  return summary;
+}
+
 function createCartItemElement(item) {
   const listItem = document.createElement('li');
   listItem.className = 'cart-item';
@@ -245,6 +286,12 @@ function createCartItemElement(item) {
   price.textContent = `${formatCurrency(item.price)} cada`;
 
   info.append(name, price);
+
+  // Resumo da personalizacao
+  const customizationSummary = createCustomizationSummary(item);
+  if (customizationSummary) {
+    info.appendChild(customizationSummary);
+  }
 
   const controls = document.createElement('div');
   controls.className = 'cart-item-controls';
