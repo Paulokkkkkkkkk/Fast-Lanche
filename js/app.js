@@ -7,6 +7,16 @@ import { openCustomizationModal } from './product-customization.js';
 import { CUSTOMIZATION_TYPES } from './constants.js';
 import { formatCurrency, showToast, openModal, closeModal, createSpinner, setButtonLoading } from './ui.js';
 
+// Mapeamento de categorias para imagens SVG animadas
+const CATEGORY_IMAGES = {
+  'Hambúrgueres': 'assets/products/hamburguer.svg',
+  'Pizzas': 'assets/products/pizza.svg',
+  'Combos': 'assets/products/combo.svg',
+  'Bebidas': 'assets/products/bebida.svg',
+  'Sobremesas': 'assets/products/sobremesa.svg',
+  'Porções': 'assets/products/porcao.svg'
+};
+
 const menuContainer = document.getElementById('menu-items');
 const searchInput = document.getElementById('search-input');
 const categoryFilter = document.getElementById('category-filter');
@@ -555,14 +565,26 @@ function createTextElement(tagName, className, text) {
   return element;
 }
 
-function createMenuCard(item) {
-  const card = document.createElement('article');
-  card.className = 'menu-item';
-
+function createMenuVisual(item) {
   const visual = document.createElement('div');
   visual.className = 'menu-item-visual';
   visual.setAttribute('aria-hidden', 'true');
 
+  const img = document.createElement('img');
+  img.className = 'menu-item-img';
+  img.src = CATEGORY_IMAGES[item.category] || 'assets/products/hamburguer.svg';
+  img.alt = `${item.category} - Fast Lanche`;
+  img.loading = 'lazy';
+
+  visual.appendChild(img);
+  return visual;
+}
+
+function createMenuCard(item) {
+  const card = document.createElement('article');
+  card.className = 'menu-item';
+
+  const visual = createMenuVisual(item);
   const category = createTextElement('p', 'section-kicker', item.category);
   const title = createTextElement('h3', '', item.name);
   const description = createTextElement('p', '', item.description);

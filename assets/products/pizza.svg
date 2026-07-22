@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160">
+  <defs>
+    <style>
+      @keyframes pulse { 0%,100% { opacity: .8 } 50% { opacity: 1 } }
+      .pulse { animation: pulse 3s ease-in-out infinite }
+    </style>
+  </defs>
+  <ellipse cx="120" cy="90" rx="90" ry="55" fill="#C48B3F"/>
+  <ellipse cx="120" cy="88" rx="82" ry="48" fill="#D32F2F"/>
+  <ellipse cx="120" cy="86" rx="78" ry="44" fill="#FFF9C4" opacity=".9"/>
+  <ellipse cx="120" cy="84" rx="75" ry="42" fill="#FFECB3" opacity=".7" class="pulse"/>
+  <circle cx="95" cy="72" r="10" fill="#C62828"/>
+  <circle cx="145" cy="68" r="10" fill="#D32F2F"/>
+  <circle cx="120" cy="95" r="9" fill="#C62828"/>
+  <circle cx="80" cy="95" r="8" fill="#D32F2F"/>
+  <circle cx="160" cy="85" r="9" fill="#C62828"/>
+  <circle cx="105" cy="60" r="4" fill="#2E2E2E"/>
+  <circle cx="138" cy="82" r="4" fill="#2E2E2E"/>
+  <circle cx="90" cy="85" r="3.5" fill="#2E2E2E"/>
+  <circle cx="110" cy="78" r="1.5" fill="#33691E"/>
+  <circle cx="130" cy="72" r="1.5" fill="#33691E"/>
+  <circle cx="100" cy="90" r="1.5" fill="#33691E"/>
+  <circle cx="140" cy="95" r="1.5" fill="#33691E"/>
+</svg>

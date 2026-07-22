@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160">
+  <defs>
+    <style>
+      @keyframes wiggle { 0%,100% { transform: rotate(0deg) } 25% { transform: rotate(2deg) } 75% { transform: rotate(-2deg) } }
+      @keyframes cherryBounce { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-3px) } }
+      .wiggle { animation: wiggle 3s ease-in-out infinite; transform-origin: center }
+      .cherry { animation: cherryBounce 1.5s ease-in-out infinite }
+    </style>
+  </defs>
+  <!-- Prato -->
+  <ellipse cx="120" cy="135" rx="90" ry="10" fill="#E0E0E0"/>
+  <ellipse cx="120" cy="133" rx="85" ry="8" fill="#F5F5F5"/>
+  <!-- Base do pudim / bolo -->
+  <path d="M65 130 Q65 60 120 50 Q175 60 175 130 Z" fill="#8D6E63"/>
+  <path d="M65 130 Q65 60 120 50 Q175 60 175 130 Z" fill="url(#pudimGrad)" opacity=".6"/>
+  <defs>
+    <linearGradient id="pudimGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D7CCC8"/>
+      <stop offset="100%" stop-color="#8D6E63"/>
+    </linearGradient>
+  </defs>
+  <!-- Calda de caramelo -->
+  <path d="M70 125 Q80 115 100 120 Q120 128 140 118 Q160 112 170 122" fill="#BF360C" opacity=".8"/>
+  <path d="M75 128 Q90 122 110 126 Q130 132 150 124 Q165 118 172 126" fill="#E65100" opacity=".6"/>
+  <!-- Cereja -->
+  <circle cx="100" cy="58" r="7" fill="#D32F2F" class="cherry"/>
+  <circle cx="100" cy="56" r="3" fill="#EF5350" opacity=".6" class="cherry"/>
+  <!-- Haste da cereja -->
+  <path d="M100 51 Q105 40 115 45" stroke="#33691E" stroke-width="1.5" fill="none"/>
+  <!-- Calda escorrendo -->
+  <path d="M80 124 Q82 140 78 150" stroke="#BF360C" stroke-width="3" fill="none" opacity=".6"/>
+  <path d="M140 122 Q142 138 138 148" stroke="#BF360C" stroke-width="3" fill="none" opacity=".6" style="animation-delay:.5s"/>
+  <!-- Brilho -->
+  <ellipse cx="130" cy="70" rx="30" ry="15" fill="#FFFFFF" opacity=".12"/>
+</svg>
