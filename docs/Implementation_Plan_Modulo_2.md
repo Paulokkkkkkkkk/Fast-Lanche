@@ -821,7 +821,43 @@ A arquitetura deve permitir futuramente:
 
 ---
 
-# FASE 20 — COMPROVANTE DIGITAL DO PEDIDO
+# FASE 20 — SISTEMA DE FILA DE PEDIDOS
+
+## Objetivo
+
+Implementar um sistema de fila de pedidos para que o cliente consiga acompanhar a posição do seu pedido em tempo real (exibindo quantos pedidos estão sendo preparados à sua frente) e o restaurante tenha melhor visualização e controle da ordem de produção.
+
+---
+
+# Funcionalidades para o Cliente
+
+No Acompanhamento de Pedido:
+
+- Exibir o número de pedidos atualmente na fila à frente do pedido do cliente.
+- Atualizar a contagem em tempo real ou a cada mudança de status no sistema.
+- Exibir mensagens interativas dependendo da posição (ex: "Seu pedido é o próximo!", "Há 3 pedidos na sua frente").
+
+---
+
+# Funcionalidades para o Restaurante
+
+No Painel Administrativo:
+
+- Visualizar a fila de pedidos pendentes ordenada de forma cronológica estrita.
+- Indicador visual claro da ordem de produção de cada pedido.
+- Atualização dinâmica da fila para todos os clientes quando o administrador avança o status de um pedido.
+
+---
+
+# Critérios de Aceite
+
+- O cliente visualiza a quantidade exata de pedidos que foram criados antes do seu e que ainda estão em preparação (com status "Pedido recebido" ou "Preparando pedido").
+- Ao atualizar o status de um pedido anterior para "Saiu para entrega" ou "Entregue", os pedidos subsequentes na fila têm sua contagem reduzida automaticamente.
+- O estado da fila é mantido localmente de forma consistente.
+
+---
+
+# FASE 21 — COMPROVANTE DIGITAL DO PEDIDO
 
 ## Objetivo
 
@@ -870,7 +906,7 @@ Salvar informações para consulta futura.
 
 ---
 
-# FASE 21 — CONTROLE DE ESTOQUE E DISPONIBILIDADE
+# FASE 22 — CONTROLE DE ESTOQUE E DISPONIBILIDADE
 
 ## Objetivo
 
@@ -923,7 +959,7 @@ Pode ser comprado normalmente.
 
 ---
 
-# FASE 22 — MELHORIAS DE EXPERIÊNCIA DO USUÁRIO (UX)
+# FASE 23 — MELHORIAS DE EXPERIÊNCIA DO USUÁRIO (UX)
 
 ## Objetivo
 
@@ -1020,7 +1056,7 @@ Exemplos:
 
 ---
 
-# FASE 23 — TESTES COMPLETOS
+# FASE 24 — TESTES COMPLETOS
 
 ## Objetivo
 
@@ -1099,6 +1135,7 @@ Validar:
 - Número identificador.
 - Comprovante.
 - Rastreamento.
+- Posição na fila de espera.
 
 ---
 
@@ -1111,6 +1148,7 @@ Validar:
 - Remoção.
 - Ativação/desativação.
 - Alteração de status.
+- Gerenciamento de pedidos em fila.
 
 ---
 
@@ -1150,7 +1188,7 @@ Recebe comprovante
 
 ↓
 
-Acompanha entrega
+Acompanha entrega (incluindo posição na fila)
 
 ↓
 
@@ -1161,7 +1199,7 @@ Confirma recebimento
 
 ---
 
-# FASE 24 — SEGUNDA RODADA DE RESPONSIVIDADE
+# FASE 25 — SEGUNDA RODADA DE RESPONSIVIDADE
 
 ## Objetivo
 
@@ -1238,7 +1276,7 @@ Revisar:
 
 ---
 
-# FASE 25 — PREPARAÇÃO PARA PRODUÇÃO
+# FASE 26 — PREPARAÇÃO PARA PRODUÇÃO
 
 ## Objetivo
 
@@ -1339,31 +1377,36 @@ Início do Backend Administrativo
 ↓
 
 FASE 20
-Comprovante Digital do Pedido
+Sistema de Fila de Pedidos
 
 ↓
 
 FASE 21
-Controle de Estoque e Disponibilidade
+Comprovante Digital do Pedido
 
 ↓
 
 FASE 22
-Melhorias de Experiência do Usuário
+Controle de Estoque e Disponibilidade
 
 ↓
 
 FASE 23
-Testes Completos
+Melhorias de Experiência do Usuário
 
 ↓
 
 FASE 24
-Segunda Rodada de Responsividade
+Testes Completos
 
 ↓
 
 FASE 25
+Segunda Rodada de Responsividade
+
+↓
+
+FASE 26
 Preparação para Produção
 ```
 
@@ -1378,6 +1421,7 @@ Ao finalizar todas as fases deste segundo módulo, o Fast Lanche terá evoluído
 - Experiência visual profissional.
 - Fluxo completo de compra.
 - Rastreamento de pedidos.
+- Fila de espera e acompanhamento de posição.
 - Comprovantes.
 - Gestão administrativa.
 - Base preparada para backend real.
