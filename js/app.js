@@ -4,6 +4,7 @@ import { setupCheckout } from './checkout.js';
 import { setupBooking } from './booking.js';
 import { setupFeedback } from './feedback.js';
 import { openCustomizationModal } from './product-customization.js';
+import { setupOrderTracking } from './order-tracking.js';
 import { CUSTOMIZATION_TYPES } from './constants.js';
 import { formatCurrency, showToast, openModal, closeModal, createSpinner, setButtonLoading } from './ui.js';
 
@@ -742,13 +743,15 @@ function setupNavToggle() {
     toggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
   });
 
-  nav.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      nav.classList.remove('open');
-      toggle.classList.remove('active');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Abrir menu');
-    });
+  const closeNav = () => {
+    nav.classList.remove('open');
+    toggle.classList.remove('active');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Abrir menu');
+  };
+
+  nav.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('click', closeNav);
   });
 
   document.addEventListener('keydown', event => {
@@ -775,6 +778,7 @@ function setup() {
   setupCheckout();
   setupBooking();
   setupFeedback();
+  setupOrderTracking();
   setupDemoInteractions();
 }
 

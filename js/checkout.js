@@ -1,6 +1,7 @@
 // checkout.js - validacao, pagamento simulado e registro de pedidos
 import { cart, clearCart } from './cart.js';
 import { openModal, closeModal, showToast, formatCurrency, setButtonLoading } from './ui.js';
+import { ORDER_STATUS } from './order-tracking.js';
 
 const checkoutForm = document.getElementById('checkout-form');
 const checkoutFeedback = document.getElementById('checkout-feedback');
@@ -146,6 +147,7 @@ function createOrder(data, paymentResult) {
     document: data.document,
     paymentMethod: data.paymentMethod,
     paymentStatus: paymentResult.status,
+    status: ORDER_STATUS.RECEIVED,
     items: cart.items.map(item => ({
       id: item.id,
       name: item.name,

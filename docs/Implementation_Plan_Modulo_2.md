@@ -568,7 +568,7 @@ O carrinho deve comunicar com:
 
 ---
 
-# FASE 18 — SISTEMA DE ACOMPANHAMENTO DE PEDIDO
+# FASE 18 — SISTEMA DE ACOMPANHAMENTO DE PEDIDO ✅
 
 ## Objetivo
 
