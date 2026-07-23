@@ -489,7 +489,7 @@ Cada produto deve apresentar:
 
 ---
 
-# FASE 17 — CARRINHO AVANÇADO
+# FASE 17 — CARRINHO AVANÇADO ✅
 
 ## Objetivo
 

@@ -575,6 +575,31 @@ input[type="range"]:focus {
   font-size: .9rem;
 }
 
+.cart-item-prices {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: 0.2rem;
+}
+
+.cart-item-unit-price {
+  color: var(--cinza-500);
+  font-size: 0.85rem;
+}
+
+.cart-item-total-price {
+  color: var(--preto);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.cart-item-extras-total {
+  font-weight: 700;
+  color: var(--preto);
+  margin-top: 0.15rem;
+}
+
 .cart-item-controls {
   display: flex;
   flex-wrap: wrap;
@@ -1413,6 +1438,16 @@ button:disabled .spinner {
 
   .cart-item-info {
     font-size: .9rem;
+  }
+
+  .cart-item-prices {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+  }
+
+  .cart-item-total-price {
+    font-size: 0.9rem;
   }
 }
 

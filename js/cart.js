@@ -59,6 +59,7 @@ function getSerializableCart() {
       id: item.id,
       name: item.name,
       price: item.price,
+      unitPrice: item.unitPrice || item.price,
       quantity: item.quantity,
       maxQuantity: item.maxQuantity,
       _customization: item._customization || null
@@ -98,6 +99,7 @@ function normalizeStoredItem(item) {
     id: Number(item.id),
     name: item.name,
     price: Math.max(Number(item.price) || 0, 0),
+    unitPrice: Math.max(Number(item.unitPrice) || Number(item.price) || 0, 0),
     quantity: normalizeQuantity(Number(item.quantity), maxQuantity),
     maxQuantity,
     _customization: item._customization || null
@@ -154,6 +156,7 @@ function addToCart(item) {
       id: item.id,
       name: item.name,
       price: Number(item.price) || 0,
+      unitPrice: Number(item.unitPrice) || Number(item.price) || 0,
       quantity: 1,
       maxQuantity: item.maxQuantity || 99,
       _customization: item._customization || null
@@ -259,8 +262,21 @@ function createCustomizationSummary(item) {
 
   if (cust.extras && cust.extras.length > 0) {
     const extrasText = document.createElement('span');
-    extrasText.textContent = `Adicionais: ${cust.extras.map(e => e.name).join(', ')}`;
+    const extrasList = cust.extras.map(e => {
+      const priceText = e.price > 0 ? ` (+${formatCurrency(e.price)})` : '';
+      return `${e.name}${priceText}`;
+    });
+    extrasText.textContent = `Adicionais: ${extrasList.join(', ')}`;
     summary.appendChild(extrasText);
+
+    // Valor total dos adicionais
+    const extrasTotal = cust.extras.reduce((sum, e) => sum + (e.price || 0), 0);
+    if (extrasTotal > 0) {
+      const extrasValue = document.createElement('span');
+      extrasValue.className = 'cart-item-extras-total';
+      extrasValue.textContent = `Total adicionais: ${formatCurrency(extrasTotal)}`;
+      summary.appendChild(extrasValue);
+    }
   }
 
   if (cust.observation) {
@@ -282,10 +298,19 @@ function createCartItemElement(item) {
   const name = document.createElement('strong');
   name.textContent = item.name;
 
-  const price = document.createElement('span');
-  price.textContent = `${formatCurrency(item.price)} cada`;
+  const priceRow = document.createElement('div');
+  priceRow.className = 'cart-item-prices';
 
-  info.append(name, price);
+  const unitPrice = document.createElement('span');
+  unitPrice.className = 'cart-item-unit-price';
+  unitPrice.textContent = `${formatCurrency(item.unitPrice || item.price)} cada`;
+
+  const totalPrice = document.createElement('span');
+  totalPrice.className = 'cart-item-total-price';
+  totalPrice.textContent = `Total: ${formatCurrency(item.price * item.quantity)}`;
+
+  priceRow.append(unitPrice, totalPrice);
+  info.append(name, priceRow);
 
   // Resumo da personalizacao
   const customizationSummary = createCustomizationSummary(item);

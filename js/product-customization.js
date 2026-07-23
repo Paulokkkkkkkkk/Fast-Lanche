@@ -86,7 +86,7 @@ function openHalfHalfModal(item) {
         input.value = flavor.name;
         input.dataset.price = flavor.price;
 
-        // Pré-seleciona o sabor que corresponde ao nome da pizza
+        // Pré-seleciona o sabor que corresponde ao nome base da pizza
         const isDefault = defaultFlavor && flavor.name === defaultFlavor.name;
         if (isDefault) {
             input.checked = true;
@@ -261,6 +261,7 @@ function openHalfHalfModal(item) {
                 const customizedItem = {
                     ...item,
                     price: item.price + extraPrice,
+                    unitPrice: item.price,
                     _customization: customizationData
                 };
 
@@ -423,6 +424,7 @@ function openRemoveIngredientsModal(item) {
                 const customizedItem = {
                     ...item,
                     price: item.price + extraPrice,
+                    unitPrice: item.price,
                     _customization: customizationData
                 };
 
@@ -520,7 +522,6 @@ function openExtrasModal(item) {
         updatePriceDisplay(priceDisplay, basePrice, extra);
     }
 
-    // --- Já habilita o botão pois não tem seleção obrigatória ---
     const actions = [
         {
             label: 'Cancelar',
@@ -542,6 +543,7 @@ function openExtrasModal(item) {
                 const customizedItem = {
                     ...item,
                     price: item.price + extraPrice,
+                    unitPrice: item.price,
                     _customization: customizationData
                 };
 
@@ -671,6 +673,7 @@ function openObservationsModal(item) {
                 const customizedItem = {
                     ...item,
                     price: item.price + extraPrice,
+                    unitPrice: item.price,
                     _customization: customizationData
                 };
 
