@@ -1867,6 +1867,292 @@ button:disabled .spinner {
   background: var(--cinza-500);
 }
 
+/* ============================================
+   FASE 21 — COMPROVANTE DIGITAL DO PEDIDO
+   ============================================ */
+
+.receipt-wrapper {
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* --- Header --- */
+.receipt-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-bottom: 1rem;
+  border-bottom: 2px dashed var(--cinza-200);
+}
+
+.receipt-title-group {
+  display: grid;
+  gap: .15rem;
+}
+
+.receipt-brand {
+  font-size: 1.3rem;
+  color: var(--vermelho);
+}
+
+.receipt-type {
+  font-size: .7rem;
+  font-weight: 700;
+  color: var(--cinza-500);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.receipt-id-group {
+  display: grid;
+  gap: .1rem;
+  text-align: right;
+}
+
+.receipt-id-label {
+  font-size: .7rem;
+  color: var(--cinza-500);
+}
+
+.receipt-id-value {
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--preto);
+  word-break: break-all;
+}
+
+/* --- Status Badge --- */
+.receipt-status-badge {
+  text-align: center;
+  font-size: .85rem;
+  font-weight: 800;
+  padding: .5rem .75rem;
+  border-radius: var(--radius);
+  color: var(--branco);
+}
+
+.receipt-status-badge.status-received {
+  background: var(--cinza-500);
+}
+
+.receipt-status-badge.status-payment {
+  background: var(--verde);
+}
+
+.receipt-status-badge.status-preparing {
+  background: #D48720;
+}
+
+.receipt-status-badge.status-out {
+  background: var(--vermelho);
+}
+
+.receipt-status-badge.status-delivered {
+  background: var(--verde);
+}
+
+/* --- Sections --- */
+.receipt-section {
+  display: grid;
+  gap: .75rem;
+}
+
+.receipt-section-title {
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--cinza-500);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding-bottom: .35rem;
+  border-bottom: 1px solid var(--cinza-200);
+}
+
+/* --- Info Grid --- */
+.receipt-info-grid {
+  display: grid;
+  gap: .4rem;
+}
+
+.receipt-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: .85rem;
+  line-height: 1.5;
+}
+
+.receipt-info-label {
+  color: var(--cinza-500);
+  flex-shrink: 0;
+}
+
+.receipt-info-value {
+  font-weight: 600;
+  color: var(--preto);
+  text-align: right;
+  word-break: break-word;
+  max-width: 60%;
+}
+
+/* --- Items Table --- */
+.receipt-items-table {
+  display: grid;
+  gap: .35rem;
+}
+
+.receipt-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: .5rem .65rem;
+  border-radius: var(--radius);
+  background: var(--cinza-50);
+  font-size: .85rem;
+}
+
+.receipt-item-info {
+  display: grid;
+  gap: .15rem;
+  flex: 1;
+}
+
+.receipt-item-name {
+  font-weight: 600;
+  color: var(--preto);
+}
+
+.receipt-item-cust {
+  font-size: .78rem;
+  color: var(--cinza-500);
+  line-height: 1.4;
+  margin-top: .15rem;
+}
+
+.receipt-item-total {
+  font-weight: 700;
+  color: var(--preto);
+  white-space: nowrap;
+  padding-top: .15rem;
+}
+
+/* --- Values --- */
+.receipt-values {
+  padding-top: .5rem;
+  border-top: 1px solid var(--cinza-200);
+}
+
+.receipt-values-divider {
+  display: grid;
+  gap: .4rem;
+}
+
+.receipt-value-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: .85rem;
+  color: var(--cinza-500);
+}
+
+.receipt-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: .6rem;
+  margin-top: .4rem;
+  border-top: 2px dashed var(--preto);
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--preto);
+}
+
+/* --- Footer --- */
+.receipt-footer {
+  text-align: center;
+  padding-top: .75rem;
+  border-top: 2px dashed var(--cinza-200);
+  font-size: .8rem;
+  color: var(--cinza-500);
+  display: grid;
+  gap: .4rem;
+}
+
+.receipt-footer p {
+  font-weight: 700;
+  color: var(--preto);
+}
+
+.receipt-footer-id {
+  font-size: .65rem;
+  color: var(--cinza-500);
+  margin-top: .25rem;
+}
+
+/* --- Lista de comprovantes salvos --- */
+.receipts-list-content {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.receipts-list {
+  display: grid;
+  gap: .5rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.receipts-list-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  background: var(--branco);
+  font-family: inherit;
+  font-size: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.receipts-list-card:hover,
+.receipts-list-card:focus-visible {
+  border-color: var(--vermelho);
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, .1);
+  outline: none;
+}
+
+.receipts-card-info {
+  display: grid;
+  gap: .15rem;
+}
+
+.receipts-card-info strong {
+  font-size: .9rem;
+  color: var(--preto);
+}
+
+.receipts-card-date {
+  font-size: .78rem;
+  color: var(--cinza-500);
+}
+
+.receipts-card-total {
+  font-weight: 900;
+  font-size: 1rem;
+  color: var(--preto);
+  white-space: nowrap;
+}
+
 @media (max-width: 480px) {
   .track-queue-number {
     font-size: 1.5rem;

@@ -7,6 +7,7 @@ import { setupFeedback } from './feedback.js';
 import { openCustomizationModal } from './product-customization.js';
 import { setupOrderTracking } from './order-tracking.js';
 import { setupAdmin } from './admin.js';
+import { setupReceipt } from './receipt.js';
 import { CUSTOMIZATION_TYPES } from './constants.js';
 import { formatCurrency, showToast, openModal, closeModal, createSpinner, setButtonLoading } from './ui.js';
 
@@ -124,6 +125,7 @@ function setup() {
   setupFeedback();
   setupOrderTracking();
   setupAdmin();
+  setupReceipt();
   setupDemoInteractions();
 }
 

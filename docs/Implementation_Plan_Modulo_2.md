@@ -857,7 +857,7 @@ No Painel Administrativo:
 
 ---
 
-# FASE 21 — COMPROVANTE DIGITAL DO PEDIDO
+# FASE 21 — COMPROVANTE DIGITAL DO PEDIDO ✅
 
 ## Objetivo
 

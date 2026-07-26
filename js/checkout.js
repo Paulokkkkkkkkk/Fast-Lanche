@@ -2,6 +2,7 @@
 import { cart, clearCart } from './cart.js';
 import { openModal, closeModal, showToast, formatCurrency, setButtonLoading } from './ui.js';
 import { ORDER_STATUS } from './order-tracking.js';
+import { createAndShowReceipt } from './receipt.js';
 
 const checkoutForm = document.getElementById('checkout-form');
 const checkoutFeedback = document.getElementById('checkout-feedback');
@@ -252,7 +253,8 @@ async function handleCheckoutSubmit(event) {
       'success'
     );
 
-    showOrderConfirmationModal(order);
+    // Fase 21: Gera e exibe comprovante digital apos pagamento aprovado
+    createAndShowReceipt(order);
     showToast(`Pedido ${order.orderNumber} confirmado!`, 'success', 5000);
   } catch (error) {
     checkoutData.paymentStatus = 'failed';
