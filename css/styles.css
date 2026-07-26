@@ -1736,6 +1736,155 @@ button:disabled .spinner {
 }
 
 /* ============================================
+   FASE 20 — SISTEMA DE FILA DE PEDIDOS
+   ============================================ */
+
+.track-queue-section {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--cinza-200);
+}
+
+.track-queue-section h4 {
+  font-size: .95rem;
+  color: var(--cinza-500);
+}
+
+.track-queue-card {
+  display: grid;
+  gap: var(--space-2);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  background: var(--cinza-50);
+}
+
+.track-queue-position {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.track-queue-number {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--vermelho);
+  line-height: 1;
+}
+
+.track-queue-label {
+  font-size: .85rem;
+  color: var(--cinza-500);
+}
+
+.track-queue-message {
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--preto);
+  margin: 0;
+  padding: var(--space-1) 0;
+}
+
+.track-queue-done {
+  color: var(--verde);
+  font-weight: 700;
+  text-align: center;
+  padding: var(--space-1);
+}
+
+.track-queue-progress {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--cinza-200);
+  overflow: hidden;
+}
+
+.track-queue-progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--vermelho), var(--amarelo));
+  transition: width .5s ease;
+  min-width: 8px;
+}
+
+/* --- Seção de fila no admin (adicional) --- */
+.admin-queue-summary {
+  display: grid;
+  gap: .5rem;
+  padding: var(--space-2);
+  border: 2px solid var(--amarelo);
+  border-radius: var(--radius);
+  background: rgba(255, 199, 0, .08);
+}
+
+.admin-queue-summary-title {
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--preto);
+}
+
+.admin-queue-summary-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: .8rem;
+  color: var(--cinza-500);
+}
+
+.admin-queue-summary-stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+}
+
+.admin-queue-summary-stats strong {
+  color: var(--preto);
+  font-size: .9rem;
+}
+
+/* Ordem de produção no admin */
+.admin-order-queue-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  padding: 0 .35rem;
+  font-size: .7rem;
+  font-weight: 800;
+  color: var(--branco);
+  background: var(--vermelho);
+}
+
+.admin-order-queue-badge.next {
+  background: var(--verde);
+}
+
+.admin-order-queue-badge.waiting {
+  background: var(--cinza-500);
+}
+
+@media (max-width: 480px) {
+  .track-queue-number {
+    font-size: 1.5rem;
+  }
+
+  .track-queue-position {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .25rem;
+  }
+
+  .admin-queue-summary-stats {
+    flex-direction: column;
+    gap: .35rem;
+  }
+}
+
+/* ============================================
    FASE 11 — RESPONSIVIDADE
    ============================================ */
 

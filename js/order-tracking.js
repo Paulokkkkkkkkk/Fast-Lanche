@@ -1,5 +1,6 @@
 // order-tracking.js - Sistema de Acompanhamento de Pedido (modal pop-up)
 import { formatCurrency, openModal, closeModal, showToast } from './ui.js';
+import { getOrderQueuePosition, onQueueUpdated, notifyQueueUpdated } from './order-queue.js';
 
 const ORDER_STATUS = {
     RECEIVED: 'Pedido recebido',
@@ -243,6 +244,12 @@ function buildTrackModalContent(order) {
 
     content.appendChild(details);
 
+    // Fila de pedidos
+    const queueSection = renderQueueSection(order);
+    if (queueSection) {
+        content.appendChild(queueSection);
+    }
+
     // Botao confirmar entrega
     const canConfirm = order.status === ORDER_STATUS.OUT_FOR_DELIVERY;
     if (canConfirm) {
@@ -265,6 +272,72 @@ function buildTrackModalContent(order) {
     return content;
 }
 
+/**
+ * Renderiza a seção de fila de pedidos para exibir ao cliente.
+ * Retorna o elemento ou null se o pedido não estiver mais na fila.
+ */
+function renderQueueSection(order) {
+    const queueInfo = getOrderQueuePosition(order.orderNumber);
+
+    const section = document.createElement('div');
+    section.className = 'track-queue-section';
+
+    const title = document.createElement('h4');
+    title.textContent = 'Posição na fila';
+    section.appendChild(title);
+
+    const card = document.createElement('div');
+    card.className = 'track-queue-card';
+
+    if (queueInfo.inQueue) {
+        // Mostrar posição na fila
+        const positionDisplay = document.createElement('div');
+        positionDisplay.className = 'track-queue-position';
+
+        const positionNumber = document.createElement('span');
+        positionNumber.className = 'track-queue-number';
+        positionNumber.textContent = `#${queueInfo.position + 1}`;
+
+        const positionLabel = document.createElement('span');
+        positionLabel.className = 'track-queue-label';
+        positionLabel.textContent = `${queueInfo.totalInQueue} pedido(s) na fila`;
+
+        positionDisplay.append(positionNumber, positionLabel);
+        card.appendChild(positionDisplay);
+
+        // Mensagem interativa
+        const message = document.createElement('p');
+        message.className = 'track-queue-message';
+        message.textContent = queueInfo.message;
+        card.appendChild(message);
+
+        // Barra de progresso visual da fila
+        if (queueInfo.totalInQueue > 1) {
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'track-queue-progress';
+
+            const progressBar = document.createElement('div');
+            progressBar.className = 'track-queue-progress-bar';
+
+            // Calcula a porcentagem: quanto mais próximo do início, maior a barra
+            const progress = ((queueInfo.totalInQueue - queueInfo.position) / queueInfo.totalInQueue) * 100;
+            progressBar.style.width = `${Math.max(10, progress)}%`;
+
+            progressContainer.appendChild(progressBar);
+            card.appendChild(progressContainer);
+        }
+    } else {
+        // Pedido não está mais na fila (já saiu ou foi entregue)
+        const message = document.createElement('p');
+        message.className = 'track-queue-message track-queue-done';
+        message.textContent = queueInfo.message;
+        card.appendChild(message);
+    }
+
+    section.appendChild(card);
+    return section;
+}
+
 function handleConfirmDelivery(event) {
     const button = event.currentTarget;
     if (!(button instanceof HTMLElement)) return;
@@ -277,6 +350,9 @@ function handleConfirmDelivery(event) {
         showToast('Erro ao confirmar entrega.', 'error');
         return;
     }
+
+    // Notificar fila sobre a mudança
+    notifyQueueUpdated();
 
     closeModal();
 
@@ -291,8 +367,28 @@ function handleConfirmDelivery(event) {
     showToast('Entrega confirmada! Obrigado por comprar no Fast Lanche.', 'success', 5000);
 }
 
+// Armazena referência ao cleanup do listener de fila para o modal atual
+let currentQueueCleanup = null;
+
 function openTrackingModal(order) {
     const content = buildTrackModalContent(order);
+
+    // Limpa listener anterior se houver
+    if (currentQueueCleanup) {
+        currentQueueCleanup();
+        currentQueueCleanup = null;
+    }
+
+    // Escuta atualizações da fila para atualizar o modal em tempo real
+    currentQueueCleanup = onQueueUpdated(() => {
+        const updatedOrder = findOrderByNumber(order.orderNumber);
+        if (updatedOrder) {
+            closeModal();
+            setTimeout(() => {
+                openTrackingModal(updatedOrder);
+            }, 300);
+        }
+    });
 
     openModal({
         title: `Acompanhar Pedido`,
@@ -301,7 +397,13 @@ function openTrackingModal(order) {
             {
                 label: 'Fechar',
                 variant: 'button-primary',
-                onClick: closeModal
+                onClick: () => {
+                    if (currentQueueCleanup) {
+                        currentQueueCleanup();
+                        currentQueueCleanup = null;
+                    }
+                    closeModal();
+                }
             }
         ]
     });

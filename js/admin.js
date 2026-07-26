@@ -3,6 +3,7 @@
 import { menuItems, updateVisibleItems } from './menu-store.js';
 import { formatCurrency, openModal, closeModal, showToast, setButtonLoading, createSpinner } from './ui.js';
 import { ORDER_STATUS, ORDER_STATUS_ORDER, saveOrders, loadOrders, getStatusIndex, getStatusText } from './order-tracking.js';
+import { getQueueStats, updateOrderStatusWithQueue } from './order-queue.js';
 
 const CATEGORIES_STORAGE_KEY = 'fastlanche_categories';
 
@@ -245,8 +246,10 @@ function updateOrderAdminStatus(orderNumber, newStatus) {
 
     if (newIdx === -1) return { success: false, error: 'Status inválido.' };
 
-    order.status = newStatus;
-    saveOrders(ordersList);
+    // Usa a função do sistema de fila para notificar atualizações
+    const updated = updateOrderStatusWithQueue(orderNumber, newStatus);
+    if (!updated) return { success: false, error: 'Erro ao atualizar status.' };
+
     return { success: true, order };
 }
 
@@ -619,6 +622,24 @@ function renderOrdersTab(container) {
     <h4 class="admin-section-title">Pedidos Recebidos</h4>
   `;
     container.appendChild(header);
+
+    // Resumo da fila
+    const stats = getQueueStats();
+    if (stats.totalInQueue > 0) {
+        const queueSummary = document.createElement('div');
+        queueSummary.className = 'admin-queue-summary';
+        queueSummary.innerHTML = `
+      <div class="admin-queue-summary-title">📋 Fila de produção — ${stats.totalInQueue} pedido(s) na fila</div>
+      <div class="admin-queue-summary-stats">
+        <span>📥 Recebidos: <strong>${stats.received}</strong></span>
+        <span>💳 Pagos: <strong>${stats.paymentConfirmed}</strong></span>
+        <span>👨‍🍳 Preparando: <strong>${stats.preparing}</strong></span>
+        <span>🚚 Saiu p/ entrega: <strong>${stats.outForDelivery}</strong></span>
+        <span>✅ Entregues: <strong>${stats.delivered}</strong></span>
+      </div>
+    `;
+        container.appendChild(queueSummary);
+    }
 
     const orders = getAllOrders();
 
