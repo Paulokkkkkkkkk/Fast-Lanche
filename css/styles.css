@@ -2758,6 +2758,210 @@ button:disabled .spinner {
   }
 }
 
+/* =========================================================================
+   ESTOQUE - Stock Badge (Cardápio)
+   ========================================================================= */
+.stock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  padding: .125rem .5rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.stock-badge--low {
+  background: rgba(255, 199, 0, .15);
+  color: #B8860B;
+}
+
+.stock-badge--out {
+  background: rgba(230, 57, 70, .12);
+  color: var(--vermelho);
+}
+
+/* =========================================================================
+   ESTOQUE - Painel Admin
+   ========================================================================= */
+
+/* Resumo */
+.admin-inventory-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.admin-inventory-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .25rem;
+  padding: var(--space-2);
+  background: var(--cinza-50);
+  border-radius: var(--radius);
+  border: 1px solid var(--cinza-200);
+}
+
+.admin-inventory-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.admin-inventory-stat-label {
+  font-size: .8125rem;
+  color: var(--cinza-500);
+  text-align: center;
+}
+
+/* Cards de estoque */
+.admin-inventory-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--branco);
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-1);
+  transition: opacity .2s;
+}
+
+.admin-inventory-card.inactive {
+  opacity: .6;
+}
+
+.admin-inventory-card.out-of-stock {
+  border-left: 3px solid var(--vermelho);
+}
+
+.admin-inventory-card.low-stock {
+  border-left: 3px solid var(--amarelo);
+}
+
+.admin-inventory-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.admin-inventory-name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  margin-bottom: .25rem;
+}
+
+.admin-inventory-meta {
+  font-size: .8125rem;
+  color: var(--cinza-500);
+}
+
+/* Badges de status do estoque */
+.admin-stock-badge {
+  display: inline-flex;
+  padding: .125rem .5rem;
+  border-radius: 999px;
+  font-size: .6875rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.admin-stock-badge--available {
+  background: rgba(31, 122, 77, .12);
+  color: var(--verde);
+}
+
+.admin-stock-badge--low {
+  background: rgba(255, 199, 0, .15);
+  color: #B8860B;
+}
+
+.admin-stock-badge--out {
+  background: rgba(230, 57, 70, .12);
+  color: var(--vermelho);
+}
+
+/* Controles de estoque */
+.admin-inventory-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-1);
+}
+
+.admin-inventory-qty-input,
+.admin-inventory-threshold-input {
+  width: 70px;
+  padding: .25rem .375rem;
+  border: 1px solid var(--cinza-200);
+  border-radius: var(--radius);
+  font-size: .875rem;
+  text-align: center;
+}
+
+.admin-inventory-qty-input:focus,
+.admin-inventory-threshold-input:focus {
+  outline: 2px solid var(--amarelo);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+/* Botão pequeno */
+.button-small {
+  padding: .25rem .625rem;
+  font-size: .75rem;
+  line-height: 1.4;
+  min-height: auto;
+}
+
+/* Field inline */
+.field-inline {
+  display: flex;
+  align-items: center;
+  gap: .375rem;
+  margin: 0;
+}
+
+.field-inline span {
+  font-size: .8125rem;
+  color: var(--cinza-500);
+  white-space: nowrap;
+}
+
+/* Subtítulo de seção */
+.admin-section-subtitle {
+  font-size: .8125rem;
+  color: var(--cinza-500);
+  margin-top: .25rem;
+  line-height: 1.5;
+}
+
+/* Responsivo: estoque */
+@media (max-width: 768px) {
+  .admin-inventory-summary {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .admin-inventory-card {
+    flex-direction: column;
+  }
+
+  .admin-inventory-controls {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-inventory-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- Print --- */
 @media print {
   .site-header {

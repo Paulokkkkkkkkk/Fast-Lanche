@@ -1,4 +1,6 @@
 // cart.js - logica do carrinho
+import { isOutOfStock, getAvailableQuantity } from './inventory.js';
+
 const cartItemsContainer = document.getElementById('cart-items');
 const cartCount = document.getElementById('cart-count');
 const cartSubtotal = document.getElementById('cart-subtotal');

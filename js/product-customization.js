@@ -2,6 +2,7 @@
 import { formatCurrency, openModal, closeModal, showToast } from './ui.js';
 import { CUSTOMIZATION_TYPES } from './constants.js';
 import { addToCart } from './cart.js';
+import { isOutOfStock, getAvailableQuantity } from './inventory.js';
 
 // =========================================================================
 // FUNÇÃO AUXILIAR: Calcular preço total + criar priceDisplay
@@ -25,7 +26,15 @@ function updatePriceDisplay(display, basePrice, extraPrice) {
 // =========================================================================
 
 function openCustomizationModal(item) {
-    if (!item || !item.customization) {
+    if (!item) return;
+
+    // Fase 22: Verificar estoque antes de permitir personalização
+    if (isOutOfStock(item.id)) {
+        showToast(`${item.name} está indisponível no momento.`, 'warning');
+        return;
+    }
+
+    if (!item.customization) {
         addToCart(item);
         showToast('Item adicionado ao carrinho.', 'success');
         return;

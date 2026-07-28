@@ -4,6 +4,7 @@ import { menuItems, updateVisibleItems } from './menu-store.js';
 import { formatCurrency, openModal, closeModal, showToast, setButtonLoading, createSpinner } from './ui.js';
 import { ORDER_STATUS, ORDER_STATUS_ORDER, saveOrders, loadOrders, getStatusIndex, getStatusText } from './order-tracking.js';
 import { getQueueStats, updateOrderStatusWithQueue } from './order-queue.js';
+import { getStock, setStock, setLowStockThreshold, isOutOfStock, isLowStock, getStockStatusText, inventoryState } from './inventory.js';
 
 const CATEGORIES_STORAGE_KEY = 'fastlanche_categories';
 
@@ -266,6 +267,7 @@ function buildAdminModal() {
     tabs.innerHTML = `
     <button class="admin-tab active" data-tab="products" type="button">Produtos</button>
     <button class="admin-tab" data-tab="categories" type="button">Categorias</button>
+    <button class="admin-tab" data-tab="inventory" type="button">Estoque</button>
     <button class="admin-tab" data-tab="orders" type="button">Pedidos</button>
   `;
 
@@ -300,6 +302,9 @@ function renderAdminTab(tabName, container) {
             break;
         case 'categories':
             renderCategoriesTab(container);
+            break;
+        case 'inventory':
+            renderInventoryTab(container);
             break;
         case 'orders':
             renderOrdersTab(container);
@@ -786,6 +791,201 @@ function renderOrdersTab(container) {
 
     statusFilter.addEventListener('change', renderOrders);
     renderOrders();
+
+    container.appendChild(list);
+}
+
+// =========================================================================
+// TAB: ESTOQUE
+// =========================================================================
+function renderInventoryTab(container) {
+    const header = document.createElement('div');
+    header.className = 'admin-section-header';
+    header.innerHTML = `
+    <h4 class="admin-section-title">Controle de Estoque</h4>
+    <p class="admin-section-subtitle">Gerencie a quantidade disponível de cada produto. Produtos com estoque zerado são automaticamente desativados no cardápio.</p>
+  `;
+    container.appendChild(header);
+
+    // Resumo do estoque
+    const totalProducts = menuItems.length;
+    const outOfStockCount = menuItems.filter(item => isOutOfStock(item.id)).length;
+    const lowStockCount = menuItems.filter(item => isLowStock(item.id)).length;
+
+    const summary = document.createElement('div');
+    summary.className = 'admin-inventory-summary';
+    summary.innerHTML = `
+    <div class="admin-inventory-stat">
+      <span class="admin-inventory-stat-value">${totalProducts}</span>
+      <span class="admin-inventory-stat-label">Total de Produtos</span>
+    </div>
+    <div class="admin-inventory-stat">
+      <span class="admin-inventory-stat-value" style="color: var(--vermelho);">${outOfStockCount}</span>
+      <span class="admin-inventory-stat-label">Sem Estoque</span>
+    </div>
+    <div class="admin-inventory-stat">
+      <span class="admin-inventory-stat-value" style="color: var(--amarelo);">${lowStockCount}</span>
+      <span class="admin-inventory-stat-label">Estoque Baixo</span>
+    </div>
+  `;
+    container.appendChild(summary);
+
+    // Filtro por categoria
+    const filterBar = document.createElement('div');
+    filterBar.className = 'admin-filter-bar';
+
+    const categoryFilter = document.createElement('select');
+    categoryFilter.className = 'admin-filter-select';
+    categoryFilter.innerHTML = `
+    <option value="all">Todas as categorias</option>
+    ${adminState.categories.map(cat => `<option value="${cat}">${cat}</option>`).join('')}
+  `;
+    filterBar.appendChild(categoryFilter);
+    container.appendChild(filterBar);
+
+    // Lista de estoque
+    const list = document.createElement('div');
+    list.className = 'admin-inventory-list';
+
+    function renderInventory() {
+        list.innerHTML = '';
+        const filterValue = categoryFilter.value;
+
+        const filteredItems = filterValue === 'all'
+            ? menuItems
+            : menuItems.filter(item => item.category === filterValue);
+
+        if (!filteredItems.length) {
+            const empty = document.createElement('p');
+            empty.className = 'empty-state';
+            empty.textContent = 'Nenhum produto encontrado para esta categoria.';
+            list.appendChild(empty);
+            return;
+        }
+
+        filteredItems.forEach(item => {
+            const stock = getStock(item.id);
+            const statusText = getStockStatusText(item.id);
+
+            const card = document.createElement('div');
+            card.className = `admin-inventory-card${!item.active ? ' inactive' : ''}${statusText.type === 'out' ? ' out-of-stock' : ''}${statusText.type === 'low' ? ' low-stock' : ''}`;
+
+            const info = document.createElement('div');
+            info.className = 'admin-inventory-info';
+
+            const nameRow = document.createElement('div');
+            nameRow.className = 'admin-inventory-name-row';
+
+            const name = document.createElement('strong');
+            name.textContent = item.name;
+
+            const statusBadge = document.createElement('span');
+            statusBadge.className = `admin-stock-badge admin-stock-badge--${statusText.type}`;
+            statusBadge.textContent = statusText.text;
+
+            nameRow.append(name, statusBadge);
+
+            const meta = document.createElement('div');
+            meta.className = 'admin-inventory-meta';
+            meta.textContent = `${item.category} • ${formatCurrency(item.price)}`;
+
+            info.append(nameRow, meta);
+
+            const controls = document.createElement('div');
+            controls.className = 'admin-inventory-controls';
+
+            // Campo de quantidade
+            const qtyField = document.createElement('label');
+            qtyField.className = 'field field-inline';
+            qtyField.innerHTML = `<span>Qtd:</span>`;
+            const qtyInput = document.createElement('input');
+            qtyInput.type = 'number';
+            qtyInput.className = 'admin-inventory-qty-input';
+            qtyInput.value = String(stock.quantity);
+            qtyInput.min = '0';
+            qtyInput.step = '1';
+            qtyInput.dataset.id = String(item.id);
+            qtyField.appendChild(qtyInput);
+
+            // Botão de atualizar
+            const updateBtn = document.createElement('button');
+            updateBtn.className = 'button button-primary button-small';
+            updateBtn.type = 'button';
+            updateBtn.textContent = 'Atualizar';
+            updateBtn.addEventListener('click', () => {
+                const newQty = parseInt(qtyInput.value, 10);
+                if (isNaN(newQty) || newQty < 0) {
+                    showToast('Quantidade inválida.', 'error');
+                    qtyInput.value = String(stock.quantity);
+                    return;
+                }
+
+                setStock(item.id, newQty);
+                showToast(`Estoque de "${item.name}" atualizado para ${newQty}.`, 'success');
+                renderInventory();
+            });
+
+            // Botão de zerar
+            const zeroBtn = document.createElement('button');
+            zeroBtn.className = 'button button-secondary button-small';
+            zeroBtn.type = 'button';
+            zeroBtn.textContent = 'Zerar';
+            zeroBtn.addEventListener('click', () => {
+                setStock(item.id, 0);
+                showToast(`Estoque de "${item.name}" zerado. Produto desativado.`, 'info');
+                renderInventory();
+            });
+
+            // Botão de reabastecer (estoque padrão)
+            const restockBtn = document.createElement('button');
+            restockBtn.className = 'button button-secondary button-small';
+            restockBtn.type = 'button';
+            restockBtn.textContent = 'Reabastecer';
+            restockBtn.addEventListener('click', () => {
+                const defaultStock = Math.max(item.maxQuantity * 5, 10);
+                setStock(item.id, defaultStock);
+                showToast(`Estoque de "${item.name}" reabastecido para ${defaultStock}.`, 'success');
+                renderInventory();
+            });
+
+            // Limiar de estoque baixo
+            const thresholdField = document.createElement('label');
+            thresholdField.className = 'field field-inline';
+            thresholdField.innerHTML = `<span>Alerta em:</span>`;
+            const thresholdInput = document.createElement('input');
+            thresholdInput.type = 'number';
+            thresholdInput.className = 'admin-inventory-threshold-input';
+            thresholdInput.value = String(stock.lowStockThreshold);
+            thresholdInput.min = '0';
+            thresholdInput.step = '1';
+            thresholdInput.dataset.id = String(item.id);
+            thresholdField.appendChild(thresholdInput);
+
+            const thresholdBtn = document.createElement('button');
+            thresholdBtn.className = 'button button-secondary button-small';
+            thresholdBtn.type = 'button';
+            thresholdBtn.textContent = 'Definir';
+            thresholdBtn.addEventListener('click', () => {
+                const newThreshold = parseInt(thresholdInput.value, 10);
+                if (isNaN(newThreshold) || newThreshold < 0) {
+                    showToast('Valor de alerta inválido.', 'error');
+                    thresholdInput.value = String(stock.lowStockThreshold);
+                    return;
+                }
+
+                setLowStockThreshold(item.id, newThreshold);
+                showToast(`Alerta de estoque baixo para "${item.name}" definido em ${newThreshold}.`, 'success');
+                renderInventory();
+            });
+
+            controls.append(qtyField, updateBtn, zeroBtn, restockBtn, thresholdField, thresholdBtn);
+            card.append(info, controls);
+            list.appendChild(card);
+        });
+    }
+
+    categoryFilter.addEventListener('change', renderInventory);
+    renderInventory();
 
     container.appendChild(list);
 }

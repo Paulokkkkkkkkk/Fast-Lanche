@@ -3,6 +3,7 @@ import { cart, clearCart } from './cart.js';
 import { openModal, closeModal, showToast, formatCurrency, setButtonLoading } from './ui.js';
 import { ORDER_STATUS } from './order-tracking.js';
 import { createAndShowReceipt } from './receipt.js';
+import { validateCartStock, consumeStockForOrder } from './inventory.js';
 
 const checkoutForm = document.getElementById('checkout-form');
 const checkoutFeedback = document.getElementById('checkout-feedback');
@@ -238,11 +239,23 @@ async function handleCheckoutSubmit(event) {
   }
 
   try {
+    // Fase 22: Validar estoque antes de processar pagamento
+    const stockErrors = validateCartStock(cart.items);
+    if (stockErrors.length) {
+      setFeedback(stockErrors[0].message, 'error');
+      showToast(stockErrors[0].message, 'error');
+      setPendingState(false);
+      return;
+    }
+
     setPendingState(true);
     setFeedback('Pagamento simulado em processamento...', 'info');
 
     const paymentResult = await processPayment(data);
     if (!paymentResult.success) throw new Error('Pagamento recusado.');
+
+    // Fase 22: Consumir estoque após pagamento aprovado
+    consumeStockForOrder(cart.items);
 
     const order = registerOrder(createOrder(data, paymentResult));
     clearCart();
