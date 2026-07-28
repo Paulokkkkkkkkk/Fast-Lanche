@@ -272,7 +272,11 @@ js/
 
 ├── inventory.js
 
-└── product-customization.js
+├── product-customization.js
+
+├── user-profile.js
+
+└── admin-claim.js
 ```
 
 ---
@@ -959,7 +963,318 @@ Pode ser comprado normalmente.
 
 ---
 
-# FASE 23 — MELHORIAS DE EXPERIÊNCIA DO USUÁRIO (UX)
+# FASE 23 — SISTEMA DE PERFIL DE USUÁRIO
+
+## Objetivo
+
+Criar um sistema de perfil de usuário que permita ao cliente personalizar sua conta com informações básicas, foto/avatar e preferências, estabelecendo a identidade do usuário dentro da plataforma.
+
+Este é o primeiro passo para uma experiência personalizada, onde o usuário terá sua própria identidade visual e dados associados à sua conta.
+
+---
+
+# Ícone de Perfil no Header
+
+Adicionar no cabeçalho do site:
+
+- Ícone/avatar do usuário (inicial ou imagem personalizada).
+- Indicador visual de que o perfil está configurado.
+- Botão para acessar o modal de perfil.
+- Tooltip com nome do usuário ao passar o mouse.
+
+---
+
+# Modal de Perfil do Usuário
+
+Criar modal contendo:
+
+## Informações Pessoais
+
+Campos editáveis:
+
+- Nome completo.
+- E-mail.
+- Telefone.
+- Endereço padrão de entrega.
+
+---
+
+## Avatar / Foto do Perfil
+
+Implementar:
+
+- Exibição da foto atual ou iniciais do nome.
+- Upload de imagem (via FileReader, armazenamento em Base64 no localStorage).
+- Opção de remover foto e voltar para iniciais.
+- Pré-visualização antes de salvar.
+
+---
+
+## Preferências do Usuário
+
+Configurações:
+
+- Método de pagamento preferido.
+- Preferência de receber notificações.
+- Tema claro/escuro (preparação futura).
+
+---
+
+# Persistência do Perfil
+
+Salvar dados em localStorage:
+
+- Chave: `fastlanche_user_profile`.
+- Estrutura: `{ name, email, phone, address, avatar, preferences, createdAt, updatedAt }`.
+- Carregar automaticamente ao iniciar a aplicação.
+- Atualizar sempre que o usuário salvar alterações.
+
+---
+
+# Integração com o Sistema
+
+O perfil deve influenciar:
+
+- Pré-preenchimento do formulário de checkout com dados do perfil.
+- Exibição do nome do usuário no header.
+- Personalização visual (iniciais no avatar quando não há foto).
+
+---
+
+# Critérios de Aceite
+
+- Usuário consegue acessar o perfil pelo ícone no header.
+- Usuário consegue editar nome, e-mail, telefone e endereço.
+- Usuário consegue adicionar/remover foto de perfil.
+- Dados persistem entre sessões via localStorage.
+- Checkout é pré-preenchido com dados do perfil quando disponível.
+- Avatar exibe iniciais quando não há foto configurada.
+
+---
+
+# FASE 24 — SISTEMA DE RECONHECIMENTO DE ADMIN (ADMIN CLAIM)
+
+## Objetivo
+
+Criar um sistema que permita ao usuário solicitar e obter o status de administrador de restaurante, habilitando o acesso ao painel administrativo com funcionalidades de gerenciamento.
+
+Este sistema estabelece a separação entre usuário comum e administrador, controlando permissões e acesso a funcionalidades restritas.
+
+---
+
+# Estrutura de Papéis (Roles)
+
+Definir dois papéis:
+
+## Cliente (role: `customer`)
+
+- Acesso padrão.
+- Navegação, pedidos, reservas, feedback.
+- Perfil pessoal.
+
+---
+
+## Administrador de Restaurante (role: `admin`)
+
+- Acesso ao painel administrativo.
+- Gerenciamento de cardápio, pedidos, estoque.
+- Controle operacional do restaurante.
+
+---
+
+# Estado da Conta
+
+Cada usuário possui:
+
+- `role`: `customer` | `admin`.
+- `isAdmin`: `true` | `false`.
+- `adminData`: dados do restaurante (se for admin).
+- `claimStatus`: `none` | `pending` | `approved` | `rejected`.
+
+---
+
+# Formulário de Solicitação de Admin
+
+Criar formulário no modal de perfil ou seção dedicada contendo:
+
+## Informações do Restaurante
+
+Campos obrigatórios:
+
+- Nome do restaurante.
+- Endereço completo (rua, número, bairro, cidade, CEP).
+- Telefone do restaurante.
+- Horário de funcionamento (abertura e fechamento).
+- Descrição do restaurante.
+
+---
+
+## Validação da Solicitação
+
+Regras:
+
+- Todos os campos obrigatórios devem ser preenchidos.
+- Nome do restaurante mínimo de 3 caracteres.
+- Endereço mínimo de 10 caracteres.
+- Telefone deve ter formato válido.
+- Horário de funcionamento deve ser coerente (abertura < fechamento).
+
+---
+
+# Fluxo de Aprovação
+
+## Solicitação Enviada
+
+- Status: `pending`.
+- Dados salvos em localStorage.
+- Mensagem de confirmação exibida.
+- Botão de admin fica visível mas desabilitado com indicativo "Aguardando aprovação".
+
+---
+
+## Aprovação Simulada
+
+Como não há backend real, implementar:
+
+- Botão "Simular Aprovação" no painel administrativo (acessível apenas para admins já aprovados).
+- Ou validação automática se todos os dados forem preenchidos corretamente.
+- Ao aprovar, status muda para `approved` e role muda para `admin`.
+
+---
+
+## Solicitação Rejeitada
+
+- Status: `rejected`.
+- Mensagem exibida com motivo.
+- Usuário pode editar dados e reenviar.
+
+---
+
+# Controle de Acesso
+
+Implementar verificação:
+
+- Botão "Admin" no header só aparece se `isAdmin === true`.
+- Se `claimStatus === 'pending'`, exibir "Admin (Pendente)" desabilitado.
+- Se `claimStatus === 'none'`, exibir "Solicitar Admin" que abre o formulário.
+- Se `isAdmin === true`, exibir "Admin" que abre o painel normalmente.
+
+---
+
+# Dados do Restaurante no Admin
+
+Quando o usuário é admin, o painel administrativo deve exibir:
+
+- Nome do restaurante no topo.
+- Endereço e contato.
+- Status do restaurante (aberto/fechado).
+- Opção de editar dados do restaurante.
+
+---
+
+# Persistência
+
+Salvar dados em localStorage:
+
+- Chave: `fastlanche_admin_claim`.
+- Estrutura: `{ role, isAdmin, claimStatus, adminData: { restaurantName, address, phone, openingHours, description }, submittedAt, approvedAt }`.
+
+---
+
+# Critérios de Aceite
+
+- Usuário consegue solicitar status de admin preenchendo dados do restaurante.
+- Dados do restaurante são validados antes do envio.
+- Status da solicitação é exibido claramente.
+- Admin aprovado consegue acessar o painel administrativo.
+- Usuário não admin não consegue acessar funcionalidades administrativas.
+- Dados persistem entre sessões.
+
+---
+
+# FASE 25 — INTEGRAÇÃO DE PERFIL E ADMIN NO SISTEMA
+
+## Objetivo
+
+Integrar os sistemas de perfil de usuário e reconhecimento de admin com todos os módulos existentes da aplicação, garantindo que os dados fluam corretamente entre as funcionalidades.
+
+---
+
+# Integração do Perfil com Checkout
+
+Implementar:
+
+- Pré-preenchimento automático dos campos do checkout com dados do perfil.
+- Campo de endereço do perfil usado como sugestão no checkout.
+- Nome e telefone preenchidos automaticamente.
+- Opção de "Usar dados do perfil" marcada por padrão.
+
+---
+
+# Integração do Perfil com Pedidos
+
+Vincular:
+
+- Nome do perfil associado ao pedido.
+- Dados de contato do perfil no comprovante.
+- Histórico de pedidos vinculado ao perfil.
+
+---
+
+# Integração do Admin com o Painel
+
+Garantir:
+
+- Botão "Admin" no header só visível para admins aprovados.
+- Painel administrativo exibe nome do restaurante.
+- Dados do restaurante aparecem no topo do painel.
+- Status do restaurante (aberto/fechado) controla visibilidade do cardápio.
+
+---
+
+# Integração com Navegação
+
+Ajustar:
+
+- Header exibe ícone de perfil com iniciais ou avatar.
+- Ao clicar no perfil, abre modal com opções: "Meu Perfil", "Meus Pedidos", "Sair".
+- Se for admin, exibir também "Painel Admin".
+- Se tiver solicitação pendente, exibir "Status da Solicitação".
+
+---
+
+# Estados Globais
+
+Criar estado global compartilhado:
+
+- `currentUser`: dados do perfil do usuário logado.
+- `userRole`: `customer` | `admin`.
+- `isAdminApproved`: boolean.
+- `claimStatus`: `none` | `pending` | `approved` | `rejected`.
+
+---
+
+# Persistência Combinada
+
+Unificar:
+
+- Perfil e admin claim salvos em localStorage.
+- Carregamento automático na inicialização.
+- Sincronização entre módulos via eventos customizados.
+
+---
+
+# Critérios de Aceite
+
+- Dados do perfil preenchem checkout automaticamente.
+- Pedidos registrados incluem dados do perfil.
+- Admin aprovado vê botão "Admin" no header.
+- Navegação reflete estado do usuário (perfil, admin, pendente).
+- Estados persistem e são carregados corretamente.
+
+---
+
+# FASE 26 — MELHORIAS DE EXPERIÊNCIA DO USUÁRIO (UX)
 
 ## Objetivo
 
@@ -1056,7 +1371,7 @@ Exemplos:
 
 ---
 
-# FASE 24 — TESTES COMPLETOS
+# FASE 27 — TESTES COMPLETOS
 
 ## Objetivo
 
@@ -1162,6 +1477,43 @@ Validar:
 
 ---
 
+# Testes do Perfil de Usuário
+
+Validar:
+
+- Abertura do modal de perfil pelo ícone no header.
+- Edição de nome, e-mail, telefone e endereço.
+- Upload e remoção de foto de perfil.
+- Pré-preenchimento do checkout com dados do perfil.
+- Persistência dos dados entre sessões.
+- Avatar exibindo iniciais quando não há foto.
+
+---
+
+# Testes de Admin Claim
+
+Validar:
+
+- Formulário de solicitação de admin com validação de campos.
+- Status da solicitação (none, pending, approved, rejected).
+- Aprovação simulada e liberação do painel admin.
+- Bloqueio de acesso ao admin para usuários não aprovados.
+- Exibição correta do botão "Admin" no header conforme status.
+- Dados do restaurante persistindo e sendo exibidos no painel.
+
+---
+
+# Testes de Integração
+
+Validar:
+
+- Perfil preenche checkout automaticamente.
+- Pedidos registrados contêm dados do perfil.
+- Admin aprovado acessa painel sem restrições.
+- Navegação reflete estado do usuário corretamente.
+
+---
+
 # Critérios de Aceite
 
 - Nenhum bug crítico encontrado.
@@ -1169,6 +1521,14 @@ Validar:
 
 ```
 Cliente entra no site
+
+↓
+
+Acessa perfil e configura dados
+
+↓
+
+Solicita admin (opcional)
 
 ↓
 
@@ -1180,7 +1540,7 @@ Personaliza pedido
 
 ↓
 
-Finaliza pagamento
+Finaliza pagamento (com dados do perfil)
 
 ↓
 
@@ -1196,10 +1556,12 @@ Confirma recebimento
 ```
 
 - Área administrativa funciona corretamente.
+- Perfil de usuário funcional e persistente.
+- Sistema de admin claim operacional.
 
 ---
 
-# FASE 25 — SEGUNDA RODADA DE RESPONSIVIDADE
+# FASE 28 — SEGUNDA RODADA DE RESPONSIVIDADE
 
 ## Objetivo
 
@@ -1264,6 +1626,8 @@ Revisar:
 - Imagens.
 - Modais.
 - Menus.
+- Ícone de perfil e dropdown.
+- Formulário de admin claim.
 
 ---
 
@@ -1276,7 +1640,7 @@ Revisar:
 
 ---
 
-# FASE 26 — PREPARAÇÃO PARA PRODUÇÃO
+# FASE 29 — PREPARAÇÃO PARA PRODUÇÃO
 
 ## Objetivo
 
@@ -1392,21 +1756,36 @@ Controle de Estoque e Disponibilidade
 ↓
 
 FASE 23
-Melhorias de Experiência do Usuário
+Sistema de Perfil de Usuário
 
 ↓
 
 FASE 24
-Testes Completos
+Sistema de Reconhecimento de Admin (Admin Claim)
 
 ↓
 
 FASE 25
-Segunda Rodada de Responsividade
+Integração de Perfil e Admin no Sistema
 
 ↓
 
 FASE 26
+Melhorias de Experiência do Usuário (UX)
+
+↓
+
+FASE 27
+Testes Completos
+
+↓
+
+FASE 28
+Segunda Rodada de Responsividade
+
+↓
+
+FASE 29
 Preparação para Produção
 ```
 
@@ -1424,4 +1803,7 @@ Ao finalizar todas as fases deste segundo módulo, o Fast Lanche terá evoluído
 - Fila de espera e acompanhamento de posição.
 - Comprovantes.
 - Gestão administrativa.
+- **Perfil de usuário personalizado com avatar e dados.**
+- **Sistema de reconhecimento de admin com solicitação e aprovação.**
+- **Integração completa entre perfil, admin e funcionalidades do sistema.**
 - Base preparada para backend real.
