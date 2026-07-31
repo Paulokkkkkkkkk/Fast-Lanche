@@ -9,6 +9,7 @@ import { setupOrderTracking } from './order-tracking.js';
 import { setupAdmin } from './admin.js';
 import { setupReceipt } from './receipt.js';
 import { setupInventory } from './inventory.js';
+import { setupUserProfile } from './user-profile.js';
 import { CUSTOMIZATION_TYPES } from './constants.js';
 import { formatCurrency, showToast, openModal, closeModal, createSpinner, setButtonLoading } from './ui.js';
 
@@ -128,6 +129,7 @@ function setup() {
   setupAdmin();
   setupReceipt();
   setupInventory();
+  setupUserProfile();
   setupDemoInteractions();
 }
 

@@ -963,7 +963,7 @@ Pode ser comprado normalmente.
 
 ---
 
-# FASE 23 — SISTEMA DE PERFIL DE USUÁRIO
+# FASE 23 — SISTEMA DE PERFIL DE USUÁRIO ✅
 
 ## Objetivo
 

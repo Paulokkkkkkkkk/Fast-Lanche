@@ -4,6 +4,7 @@ import { openModal, closeModal, showToast, formatCurrency, setButtonLoading } fr
 import { ORDER_STATUS } from './order-tracking.js';
 import { createAndShowReceipt } from './receipt.js';
 import { validateCartStock, consumeStockForOrder } from './inventory.js';
+import { getProfileDataForCheckout, isProfileComplete } from './user-profile.js';
 
 const checkoutForm = document.getElementById('checkout-form');
 const checkoutFeedback = document.getElementById('checkout-feedback');
@@ -279,9 +280,34 @@ async function handleCheckoutSubmit(event) {
   }
 }
 
+function prefillCheckoutWithProfile() {
+  if (!checkoutForm) return;
+
+  const profileData = getProfileDataForCheckout();
+  if (!profileData.name && !profileData.phone && !profileData.address) return;
+
+  const nameInput = document.getElementById('checkout-name');
+  const phoneInput = document.getElementById('checkout-phone');
+  const addressInput = document.getElementById('checkout-address');
+  const paymentSelect = document.getElementById('checkout-payment');
+
+  if (profileData.name && nameInput) nameInput.value = profileData.name;
+  if (profileData.phone && phoneInput) phoneInput.value = profileData.phone;
+  if (profileData.address && addressInput) addressInput.value = profileData.address;
+  if (profileData.paymentMethod && paymentSelect) paymentSelect.value = profileData.paymentMethod;
+}
+
 function setupCheckout() {
   loadOrders();
   if (!checkoutForm) return;
+
+  // Pré-preenchimento com dados do perfil ao carregar
+  prefillCheckoutWithProfile();
+
+  // Re-preenchimento quando o perfil for atualizado
+  document.addEventListener('profile:update', () => {
+    prefillCheckoutWithProfile();
+  });
 
   checkoutForm.addEventListener('submit', handleCheckoutSubmit);
 }
