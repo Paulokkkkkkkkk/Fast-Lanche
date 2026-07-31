@@ -991,12 +991,111 @@ function renderInventoryTab(container) {
 }
 
 // =========================================================================
+// DADOS DO ADMIN CLAIM (via localStorage para evitar dependência circular)
+// =========================================================================
+function getAdminClaimFromStorage() {
+    try {
+        const stored = localStorage.getItem('fastlanche_admin_claim');
+        if (!stored) return null;
+        return JSON.parse(stored);
+    } catch {
+        return null;
+    }
+}
+
+function formatPhoneDisplay(phone) {
+    const digits = String(phone || '').replace(/\D/g, '');
+    if (digits.length === 11) {
+        return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+    }
+    if (digits.length === 10) {
+        return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    }
+    return phone || '';
+}
+
+// =========================================================================
+// INFORMAÇÕES DO RESTAURANTE NO ADMIN
+// =========================================================================
+function buildRestaurantInfoCard() {
+    const claimData = getAdminClaimFromStorage();
+    if (!claimData || !claimData.isAdmin || claimData.claimStatus !== 'approved') {
+        return null;
+    }
+
+    const data = claimData.adminData || {};
+    const card = document.createElement('div');
+    card.className = 'admin-restaurant-card';
+
+    const nameRow = document.createElement('div');
+    nameRow.className = 'admin-restaurant-name-row';
+    nameRow.innerHTML = `
+        <strong class="admin-restaurant-name">${data.restaurantName || 'Restaurante'}</strong>
+        <span class="admin-restaurant-status-badge status-open">Aberto</span>
+    `;
+    card.appendChild(nameRow);
+
+    const details = document.createElement('div');
+    details.className = 'admin-restaurant-details';
+
+    if (data.address) {
+        const addr = document.createElement('span');
+        addr.className = 'admin-restaurant-detail';
+        addr.innerHTML = `📍 ${data.address}`;
+        details.appendChild(addr);
+    }
+
+    if (data.phone) {
+        const phone = document.createElement('span');
+        phone.className = 'admin-restaurant-detail';
+        phone.innerHTML = `📞 ${formatPhoneDisplay(data.phone)}`;
+        details.appendChild(phone);
+    }
+
+    if (data.openingHours?.open && data.openingHours?.close) {
+        const hours = document.createElement('span');
+        hours.className = 'admin-restaurant-detail';
+        hours.innerHTML = `🕐 ${data.openingHours.open} - ${data.openingHours.close}`;
+        details.appendChild(hours);
+    }
+
+    if (data.description) {
+        const desc = document.createElement('p');
+        desc.className = 'admin-restaurant-desc';
+        desc.textContent = data.description;
+        details.appendChild(desc);
+    }
+
+    card.appendChild(details);
+
+    // Botão para editar dados do restaurante (abre o formulário de claim)
+    const editBtn = document.createElement('button');
+    editBtn.className = 'button button-secondary button-small';
+    editBtn.type = 'button';
+    editBtn.textContent = 'Editar dados do restaurante';
+    editBtn.addEventListener('click', () => {
+        import('./admin-claim.js').then(({ openClaimFormModal }) => {
+            openClaimFormModal();
+        });
+    });
+    card.appendChild(editBtn);
+
+    return card;
+}
+
+// =========================================================================
 // ABRIR PAINEL ADMIN
 // =========================================================================
 function openAdminPanel() {
     adminState.categories = loadCategories();
 
     const content = buildAdminModal();
+
+    // Adicionar card de informações do restaurante no topo se for admin
+    const restaurantCard = buildRestaurantInfoCard();
+    if (restaurantCard) {
+        content.insertBefore(restaurantCard, content.firstChild);
+    }
 
     openModal({
         title: 'Painel Administrativo',
@@ -1017,19 +1116,6 @@ function openAdminPanel() {
 function setupAdmin() {
     adminState.categories = loadCategories();
     loadProductsFromStorage();
-
-    // Botão no header para acessar o admin
-    const nav = document.getElementById('main-nav');
-    if (nav) {
-        const adminBtn = document.createElement('button');
-        adminBtn.className = 'nav-link-btn';
-        adminBtn.type = 'button';
-        adminBtn.id = 'nav-admin-btn';
-        adminBtn.textContent = 'Admin';
-        adminBtn.setAttribute('aria-label', 'Abrir painel administrativo');
-        adminBtn.addEventListener('click', openAdminPanel);
-        nav.appendChild(adminBtn);
-    }
 }
 
 export {

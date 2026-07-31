@@ -1052,8 +1052,8 @@ O perfil deve influenciar:
 
 ---
 
-# FASE 24 — SISTEMA DE RECONHECIMENTO DE ADMIN (ADMIN CLAIM)
-
+# FASE 24 — SISTEMA DE RECONHECIMENTO DE ADMIN (ADMIN CLAIM) ✅
+ 
 ## Objetivo
 
 Criar um sistema que permita ao usuário solicitar e obter o status de administrador de restaurante, habilitando o acesso ao painel administrativo com funcionalidades de gerenciamento.

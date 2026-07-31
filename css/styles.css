@@ -3147,6 +3147,211 @@ button:disabled .spinner {
   }
 }
 
+/* ============================================
+   FASE 24 — ADMIN CLAIM FORMULÁRIO
+   ============================================ */
+
+.admin-claim-form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.admin-claim-desc {
+  font-size: .9rem;
+  color: var(--cinza-500);
+  line-height: 1.5;
+  margin-bottom: var(--space-1);
+}
+
+.admin-claim-rejected-msg {
+  padding: var(--space-2);
+  border-radius: var(--radius);
+  background: rgba(230, 57, 70, .08);
+  border: 1px solid rgba(230, 57, 70, .2);
+  color: var(--vermelho);
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+.admin-claim-rejected-msg strong {
+  display: block;
+  margin-bottom: .25rem;
+}
+
+.admin-claim-rejected-msg p {
+  margin-top: .25rem;
+  color: var(--preto);
+}
+
+.admin-claim-approved-msg {
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  background: rgba(31, 122, 77, .08);
+  border: 1px solid rgba(31, 122, 77, .2);
+  color: var(--verde);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.admin-claim-approved-msg strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: .25rem;
+}
+
+.admin-claim-approved-msg p {
+  color: var(--cinza-500);
+  font-size: .9rem;
+}
+
+.admin-claim-hours-title {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--cinza-500);
+  margin: 0;
+}
+
+.admin-claim-hours-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+/* ============================================
+   FASE 24 — ADMIN RESTAURANT CARD
+   ============================================ */
+
+.admin-restaurant-card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 2px solid var(--amarelo);
+  border-radius: var(--radius);
+  background: rgba(255, 199, 0, .06);
+  margin-bottom: var(--space-2);
+}
+
+.admin-restaurant-name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.admin-restaurant-name {
+  font-size: 1.1rem;
+  color: var(--preto);
+}
+
+.admin-restaurant-status-badge {
+  display: inline-flex;
+  padding: .15rem .6rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.admin-restaurant-status-badge.status-open {
+  color: var(--verde);
+  background: rgba(31, 122, 77, .1);
+}
+
+.admin-restaurant-status-badge.status-closed {
+  color: var(--vermelho);
+  background: rgba(230, 57, 70, .1);
+}
+
+.admin-restaurant-details {
+  display: grid;
+  gap: .35rem;
+}
+
+.admin-restaurant-detail {
+  font-size: .85rem;
+  color: var(--cinza-500);
+  line-height: 1.5;
+}
+
+.admin-restaurant-desc {
+  font-size: .85rem;
+  color: var(--cinza-500);
+  line-height: 1.5;
+  margin-top: .25rem;
+  padding-top: .5rem;
+  border-top: 1px solid var(--cinza-200);
+}
+
+/* ============================================
+   FASE 24 — ADMIN CLAIM HEADER BUTTON
+   ============================================ */
+
+#nav-admin-claim-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 999px;
+  padding: .55rem .85rem;
+  color: var(--branco);
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+
+#nav-admin-claim-btn:hover,
+#nav-admin-claim-btn:focus-visible {
+  color: var(--preto);
+  background: var(--amarelo);
+  border-color: var(--amarelo);
+  outline: none;
+}
+
+#nav-admin-claim-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#nav-admin-claim-btn:disabled:hover {
+  color: var(--branco);
+  background: transparent;
+  border-color: rgba(255, 255, 255, .2);
+}
+
+@media (max-width:720px) {
+  #nav-admin-claim-btn {
+    width: 100%;
+    padding-inline: .7rem;
+    justify-content: center;
+  }
+
+  #nav-admin-claim-btn:disabled {
+    width: 100%;
+  }
+}
+
+@media (hover:none) and (pointer:coarse) {
+  #nav-admin-claim-btn {
+    min-height: 44px;
+    padding-block: .6rem;
+  }
+
+  #nav-admin-claim-btn:hover {
+    color: var(--branco);
+    background: transparent;
+    border-color: rgba(255, 255, 255, .2);
+  }
+
+  #nav-admin-claim-btn:active {
+    color: var(--preto);
+    background: var(--amarelo);
+    border-color: var(--amarelo);
+  }
+}
+
 /* --- Print --- */
 @media print {
   .site-header {
