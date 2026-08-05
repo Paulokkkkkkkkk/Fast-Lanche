@@ -15,6 +15,7 @@ function generateReceipt(order) {
         phone: order.phone,
         address: order.address,
         document: order.document || 'Nao informado',
+        email: order.userEmail || '',
         paymentMethod: order.paymentMethod,
         paymentLabel: getPaymentLabel(order.paymentMethod),
         paymentStatus: order.paymentStatus,
@@ -213,6 +214,9 @@ function buildReceiptContent(receipt) {
     addInfoRow(infoGrid, 'Telefone', receipt.phone);
     addInfoRow(infoGrid, 'Endereco', receipt.address);
     addInfoRow(infoGrid, 'Documento', receipt.document);
+    if (receipt.email) {
+        addInfoRow(infoGrid, 'E-mail', receipt.email);
+    }
     addInfoRow(infoGrid, 'Pagamento', receipt.paymentLabel);
 
     infoSection.appendChild(infoGrid);
@@ -434,6 +438,7 @@ function buildReceiptCaptureHTML(receipt) {
         + buildInfoCaptureHTML('Telefone', receipt.phone)
         + buildInfoCaptureHTML('Endereco', receipt.address)
         + buildInfoCaptureHTML('Documento', receipt.document)
+        + (receipt.email ? buildInfoCaptureHTML('E-mail', receipt.email) : '')
         + buildInfoCaptureHTML('Pagamento', receipt.paymentLabel)
         + '    </div>'
         + '  </div>'
@@ -525,24 +530,13 @@ function openReceiptsListModal() {
     });
 }
 
-function setupReceiptButton() {
-    const existingBtn = document.getElementById('nav-receipts-btn');
-    if (existingBtn) return;
-
-    const nav = document.getElementById('main-nav');
-    if (!nav) return;
-
-    const btn = document.createElement('button');
-    btn.id = 'nav-receipts-btn';
-    btn.className = 'nav-link-btn';
-    btn.type = 'button';
-    btn.textContent = 'Comprovantes';
-    btn.addEventListener('click', openReceiptsListModal);
-    nav.appendChild(btn);
-}
-
 function setupReceipt() {
-    setupReceiptButton();
+    // O botão "Comprovantes" foi movido para o dropdown de perfil (user-navigation.js)
+    // Remover botão antigo do main-nav se existir
+    const existingBtn = document.getElementById('nav-receipts-btn');
+    if (existingBtn) {
+        existingBtn.remove();
+    }
 }
 
 export {

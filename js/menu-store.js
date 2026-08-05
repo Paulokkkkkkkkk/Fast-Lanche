@@ -541,6 +541,51 @@ const menuContainer = document.getElementById('menu-items');
 let visibleItems = menuItems.filter(item => item.active);
 let activeFilter = 'all';
 let searchTerm = '';
+let restaurantClosed = false;
+
+// ============================================
+// STATUS DO RESTAURANTE (ABERTO/FECHADO)
+// ============================================
+
+function getRestaurantStatusFromStorage() {
+    try {
+        const stored = localStorage.getItem('fastlanche_restaurant_status');
+        if (!stored) return 'open';
+        const parsed = JSON.parse(stored);
+        return parsed === 'open' || parsed === 'closed' ? parsed : 'open';
+    } catch {
+        return 'open';
+    }
+}
+
+function isRestaurantClosed() {
+    return getRestaurantStatusFromStorage() === 'closed';
+}
+
+function renderRestaurantClosedMessage() {
+    if (!menuContainer) return;
+
+    const message = document.createElement('div');
+    message.className = 'restaurant-closed-banner';
+
+    const icon = document.createElement('span');
+    icon.className = 'restaurant-closed-icon';
+    icon.textContent = '🕐';
+
+    const text = document.createElement('div');
+    text.className = 'restaurant-closed-text';
+
+    const title = document.createElement('strong');
+    title.textContent = 'Restaurante fechado no momento';
+
+    const subtitle = document.createElement('span');
+    subtitle.textContent = 'Volte mais tarde para fazer seu pedido.';
+
+    text.append(title, subtitle);
+    message.append(icon, text);
+
+    menuContainer.replaceChildren(message);
+}
 
 const normalizeText = value => (
     value
@@ -648,6 +693,12 @@ function getFilteredMenuItems() {
 }
 
 function updateVisibleItems() {
+    if (isRestaurantClosed()) {
+        visibleItems = [];
+        renderRestaurantClosedMessage();
+        return;
+    }
+
     visibleItems = getFilteredMenuItems();
     renderMenu(visibleItems);
 }
@@ -662,6 +713,21 @@ function setActiveFilter(value) {
     updateVisibleItems();
 }
 
+// ============================================
+// SETUP - STATUS DO RESTAURANTE
+// ============================================
+
+function setupRestaurantStatusListener() {
+    document.addEventListener('restaurant:status-change', () => {
+        updateVisibleItems();
+    });
+
+    // Verificar status inicial
+    if (isRestaurantClosed()) {
+        updateVisibleItems();
+    }
+}
+
 export {
     activeFilter,
     menuItems,
@@ -670,5 +736,8 @@ export {
     setActiveFilter,
     setSearchTerm,
     updateVisibleItems,
-    visibleItems
+    visibleItems,
+    isRestaurantClosed,
+    getRestaurantStatusFromStorage,
+    setupRestaurantStatusListener
 };

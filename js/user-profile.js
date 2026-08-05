@@ -110,6 +110,13 @@ function isProfileComplete() {
     );
 }
 
+function dispatchAppStateSync() {
+    const event = new CustomEvent('appstate:update', {
+        detail: { profile: getProfile() }
+    });
+    document.dispatchEvent(event);
+}
+
 function updateProfile(data) {
     const name = normalizeText(data.name || '');
     const email = normalizeText(data.email || '');
@@ -133,23 +140,23 @@ function updateProfile(data) {
     }
 
     saveProfile();
-    updateHeaderAvatar();
     dispatchProfileUpdate();
+    dispatchAppStateSync();
     return getProfile();
 }
 
 function updateAvatar(avatarBase64) {
     currentProfile.avatar = avatarBase64 || '';
     saveProfile();
-    updateHeaderAvatar();
     dispatchProfileUpdate();
+    dispatchAppStateSync();
 }
 
 function removeAvatar() {
     currentProfile.avatar = '';
     saveProfile();
-    updateHeaderAvatar();
     dispatchProfileUpdate();
+    dispatchAppStateSync();
 }
 
 // ============================================
@@ -177,34 +184,14 @@ function createHeaderAvatar() {
 }
 
 function updateHeaderAvatar() {
-    const container = document.getElementById('profile-header-container');
-    if (!container) return;
-
-    container.replaceChildren();
-    const btn = createHeaderAvatar();
-    const name = getProfileName();
-    const avatar = getProfileAvatar();
-
-    if (avatar) {
-        const img = document.createElement('img');
-        img.className = 'profile-avatar-img';
-        img.src = avatar;
-        img.alt = name || 'Avatar do usuario';
-        btn.appendChild(img);
-    } else {
-        const initials = document.createElement('span');
-        initials.className = 'profile-avatar-initials';
-        initials.textContent = getInitials(name);
-        btn.appendChild(initials);
-    }
-
-    // Tooltip com nome
-    if (name) {
-        btn.setAttribute('title', name);
-    }
-
-    btn.addEventListener('click', () => openProfileModal());
-    container.appendChild(btn);
+    // O header (avatar + dropdown) é renderizado pelo user-navigation.js
+    // para integrar perfil e admin claim. Esta função apenas dispara
+    // o evento de atualização do estado global para que a navegação
+    // atualize o avatar com os dados mais recentes.
+    const event = new CustomEvent('profile:update', {
+        detail: { profile: getProfile() }
+    });
+    document.dispatchEvent(event);
 }
 
 // ============================================
@@ -556,7 +543,9 @@ function setupUserProfile() {
     // Carregar perfil salvo
     loadProfile();
 
-    // Criar container do avatar no header se não existir
+    // O header (avatar + dropdown) é renderizado pelo user-navigation.js
+    // para integrar perfil e admin claim. Esta função apenas garante que
+    // o container exista no DOM.
     const headerLayout = document.querySelector('.header-layout');
     if (!headerLayout) return;
 
@@ -573,8 +562,6 @@ function setupUserProfile() {
             headerLayout.appendChild(container);
         }
     }
-
-    updateHeaderAvatar();
 }
 
 // ============================================

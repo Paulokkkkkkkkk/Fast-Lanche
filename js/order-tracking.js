@@ -495,9 +495,11 @@ function openTrackSearchModal() {
 }
 
 function setupOrderTracking() {
-    const trackBtn = document.getElementById('nav-track-btn');
-    if (trackBtn) {
-        trackBtn.addEventListener('click', openTrackSearchModal);
+    // O botão "Acompanhar" foi movido para o dropdown de perfil (user-navigation.js)
+    // Remover botão antigo do main-nav se existir
+    const existingTrackBtn = document.getElementById('nav-track-btn');
+    if (existingTrackBtn) {
+        existingTrackBtn.remove();
     }
 }
 
@@ -508,6 +510,8 @@ export {
     getStatusIndex,
     getStatusText,
     loadOrders,
+    openTrackSearchModal,
+    openTrackingModal,
     saveOrders,
     setupOrderTracking,
     updateOrderStatus

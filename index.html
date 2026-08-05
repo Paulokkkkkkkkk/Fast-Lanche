@@ -27,7 +27,6 @@
         <a href="#checkout">Checkout</a>
         <a href="#booking">Reserva</a>
         <a href="#feedback">Feedback</a>
-        <button id="nav-track-btn" class="nav-link-btn" type="button">Acompanhar</button>
       </nav>
       <!-- Container do perfil do usuario (inserido via JS) -->
       <div id="profile-header-container" class="profile-header-container"></div>
@@ -154,6 +153,10 @@
               <span>CPF/CNPJ opcional</span>
               <input id="checkout-document" name="document" type="text" inputmode="numeric" minlength="11"
                 maxlength="18">
+            </label>
+            <label class="field field-full field-checkbox" for="checkout-use-profile">
+              <input id="checkout-use-profile" name="use-profile" type="checkbox" checked>
+              <span>Usar dados do perfil</span>
             </label>
             <div class="field-full form-actions">
               <button class="button button-primary" type="submit">Finalizar pedido</button>

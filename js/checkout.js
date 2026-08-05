@@ -4,7 +4,7 @@ import { openModal, closeModal, showToast, formatCurrency, setButtonLoading } fr
 import { ORDER_STATUS } from './order-tracking.js';
 import { createAndShowReceipt } from './receipt.js';
 import { validateCartStock, consumeStockForOrder } from './inventory.js';
-import { getProfileDataForCheckout, isProfileComplete } from './user-profile.js';
+import { getProfileDataForCheckout, isProfileComplete, getProfile } from './user-profile.js';
 
 const checkoutForm = document.getElementById('checkout-form');
 const checkoutFeedback = document.getElementById('checkout-feedback');
@@ -20,7 +20,8 @@ const checkoutData = {
   orderNumber: '',
   paymentMethod: '',
   isPaymentPending: false,
-  paymentStatus: 'idle'
+  paymentStatus: 'idle',
+  useProfileData: true
 };
 
 const orders = [];
@@ -142,7 +143,9 @@ function processPayment(data) {
 }
 
 function createOrder(data, paymentResult) {
-  return {
+  // Obter dados do perfil para vincular ao pedido
+  const profile = getProfile();
+  const order = {
     orderNumber: data.orderNumber,
     customerName: data.customerName,
     phone: data.phone,
@@ -163,6 +166,18 @@ function createOrder(data, paymentResult) {
     total: cart.total,
     createdAt: new Date().toISOString()
   };
+
+  // Vincular dados do perfil ao pedido
+  if (profile?.name || profile?.email) {
+    order.userEmail = profile.email || '';
+    order.userProfileId = profile.email || '';
+    // Se o nome do checkout estiver vazio, usar o nome do perfil
+    if (!data.customerName && profile.name) {
+      order.customerName = profile.name;
+    }
+  }
+
+  return order;
 }
 
 function registerOrder(order) {
@@ -283,6 +298,10 @@ async function handleCheckoutSubmit(event) {
 function prefillCheckoutWithProfile() {
   if (!checkoutForm) return;
 
+  const useProfileCheckbox = document.getElementById('checkout-use-profile');
+  const shouldUseProfile = useProfileCheckbox ? useProfileCheckbox.checked : true;
+  if (!shouldUseProfile) return;
+
   const profileData = getProfileDataForCheckout();
   if (!profileData.name && !profileData.phone && !profileData.address) return;
 
@@ -308,6 +327,16 @@ function setupCheckout() {
   document.addEventListener('profile:update', () => {
     prefillCheckoutWithProfile();
   });
+
+  // Re-preenchimento quando o checkbox "Usar dados do perfil" for alterado
+  const useProfileCheckbox = document.getElementById('checkout-use-profile');
+  if (useProfileCheckbox) {
+    useProfileCheckbox.addEventListener('change', () => {
+      if (useProfileCheckbox.checked) {
+        prefillCheckoutWithProfile();
+      }
+    });
+  }
 
   checkoutForm.addEventListener('submit', handleCheckoutSubmit);
 }

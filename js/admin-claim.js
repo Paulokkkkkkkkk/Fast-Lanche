@@ -2,7 +2,6 @@
 // Fase 24 - Gerencia solicitação e concessão de status de administrador
 
 import { showToast } from './ui.js';
-import { openAdminPanel } from './admin.js';
 
 const STORAGE_KEY = 'fastlanche_admin_claim';
 
@@ -63,11 +62,19 @@ function isValidPhone(phone) {
 // PERSISTÊNCIA
 // ============================================
 
+function dispatchAppStateSync() {
+    const event = new CustomEvent('appstate:update', {
+        detail: { claim: getClaimData() }
+    });
+    document.dispatchEvent(event);
+}
+
 function saveClaimData() {
     if (!isStorageAvailable()) return false;
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(currentClaim));
         dispatchClaimUpdate();
+        dispatchAppStateSync();
         return true;
     } catch {
         return false;
@@ -272,66 +279,25 @@ function dispatchClaimUpdate() {
 // ============================================
 // HEADER ADMIN BUTTON
 // ============================================
-
-function createAdminButton() {
-    const btn = document.createElement('button');
-    btn.className = 'nav-link-btn';
-    btn.type = 'button';
-    btn.id = 'nav-admin-claim-btn';
-    return btn;
-}
+// A navegação integrada (user-navigation.js) cuida do botão de admin
+// no dropdown de perfil. Esta função apenas garante que o botão antigo
+// do main-nav seja removido para evitar duplicação.
 
 function updateHeaderAdminButton() {
     const nav = document.getElementById('main-nav');
     if (!nav) return;
 
-    // Remover botão existente se houver
+    // Remover botão antigo do main-nav (agora integrado ao dropdown de perfil)
     const existingBtn = document.getElementById('nav-admin-claim-btn');
     if (existingBtn) {
         existingBtn.remove();
     }
 
-    const btn = createAdminButton();
-    const status = currentClaim.claimStatus;
-    const isAdmin = currentClaim.isAdmin;
-
-    if (isAdmin && status === 'approved') {
-        // Admin aprovado: botão "Admin" funcional
-        btn.textContent = 'Admin';
-        btn.setAttribute('aria-label', 'Abrir painel administrativo');
-        btn.addEventListener('click', () => {
-            openAdminPanel();
-        });
-        nav.appendChild(btn);
-
-    } else if (status === 'pending') {
-        // Solicitação pendente: botão desabilitado com indicativo
-        btn.textContent = 'Admin (Pendente)';
-        btn.setAttribute('aria-label', 'Aguardando aprovacao');
-        btn.setAttribute('title', 'Sua solicitacao de administrador esta aguardando aprovacao.');
-        btn.disabled = true;
-        btn.style.opacity = '0.6';
-        btn.style.cursor = 'not-allowed';
-        nav.appendChild(btn);
-
-    } else if (status === 'rejected') {
-        // Solicitação rejeitada: botão para reenviar
-        btn.textContent = 'Reenviar Solicitação';
-        btn.setAttribute('aria-label', 'Reenviar solicitacao de administrador');
-        btn.addEventListener('click', () => {
-            openClaimFormModal();
-        });
-        nav.appendChild(btn);
-
-    } else {
-        // Nenhuma solicitação: botão "Solicitar Admin"
-        btn.textContent = 'Solicitar Admin';
-        btn.setAttribute('aria-label', 'Solicitar status de administrador');
-        btn.addEventListener('click', () => {
-            openClaimFormModal();
-        });
-        nav.appendChild(btn);
-    }
+    // Disparar evento para sincronizar o estado global
+    const event = new CustomEvent('appstate:update', {
+        detail: { claim: getClaimData() }
+    });
+    document.dispatchEvent(event);
 }
 
 // ============================================

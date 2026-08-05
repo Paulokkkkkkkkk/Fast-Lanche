@@ -1,5 +1,5 @@
 // app.js - Inicialização, navegação e comunicação entre módulos
-import { menuItems, renderMenu, updateVisibleItems, setSearchTerm, setActiveFilter, searchTerm, activeFilter, visibleItems } from './menu-store.js';
+import { menuItems, renderMenu, updateVisibleItems, setSearchTerm, setActiveFilter, searchTerm, activeFilter, visibleItems, setupRestaurantStatusListener } from './menu-store.js';
 import { addToCart, loadCart, setupCartControls } from './cart.js';
 import { setupCheckout } from './checkout.js';
 import { setupBooking } from './booking.js';
@@ -11,6 +11,8 @@ import { setupReceipt } from './receipt.js';
 import { setupInventory } from './inventory.js';
 import { setupUserProfile } from './user-profile.js';
 import { setupAdminClaim } from './admin-claim.js';
+import { setupUserNavigation } from './user-navigation.js';
+import { setupAppState } from './app-state.js';
 import { CUSTOMIZATION_TYPES } from './constants.js';
 import { formatCurrency, showToast, openModal, closeModal, createSpinner, setButtonLoading } from './ui.js';
 
@@ -132,6 +134,9 @@ function setup() {
   setupInventory();
   setupUserProfile();
   setupAdminClaim();
+  setupAppState();
+  setupUserNavigation();
+  setupRestaurantStatusListener();
   setupDemoInteractions();
 }
 

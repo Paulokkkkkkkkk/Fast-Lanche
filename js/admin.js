@@ -1015,6 +1015,41 @@ function formatPhoneDisplay(phone) {
 }
 
 // =========================================================================
+// STATUS DO RESTAURANTE (ABERTO/FECHADO)
+// =========================================================================
+const RESTAURANT_STATUS_KEY = 'fastlanche_restaurant_status';
+
+function getRestaurantStatus() {
+    try {
+        const stored = localStorage.getItem(RESTAURANT_STATUS_KEY);
+        if (!stored) return 'open'; // Padrão: aberto
+        const parsed = JSON.parse(stored);
+        return parsed === 'open' || parsed === 'closed' ? parsed : 'open';
+    } catch {
+        return 'open';
+    }
+}
+
+function setRestaurantStatus(status) {
+    const normalized = status === 'closed' ? 'closed' : 'open';
+    try {
+        localStorage.setItem(RESTAURANT_STATUS_KEY, JSON.stringify(normalized));
+        // Disparar evento para sincronizar cardápio
+        const event = new CustomEvent('restaurant:status-change', {
+            detail: { status: normalized }
+        });
+        document.dispatchEvent(event);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function isRestaurantOpen() {
+    return getRestaurantStatus() === 'open';
+}
+
+// =========================================================================
 // INFORMAÇÕES DO RESTAURANTE NO ADMIN
 // =========================================================================
 function buildRestaurantInfoCard() {
@@ -1027,11 +1062,13 @@ function buildRestaurantInfoCard() {
     const card = document.createElement('div');
     card.className = 'admin-restaurant-card';
 
+    const isOpen = isRestaurantOpen();
+
     const nameRow = document.createElement('div');
     nameRow.className = 'admin-restaurant-name-row';
     nameRow.innerHTML = `
         <strong class="admin-restaurant-name">${data.restaurantName || 'Restaurante'}</strong>
-        <span class="admin-restaurant-status-badge status-open">Aberto</span>
+        <span class="admin-restaurant-status-badge ${isOpen ? 'status-open' : 'status-closed'}">${isOpen ? 'Aberto' : 'Fechado'}</span>
     `;
     card.appendChild(nameRow);
 
@@ -1067,6 +1104,30 @@ function buildRestaurantInfoCard() {
     }
 
     card.appendChild(details);
+
+    // Controle de status do restaurante (aberto/fechado)
+    const statusControls = document.createElement('div');
+    statusControls.className = 'admin-restaurant-status-controls';
+
+    const statusLabel = document.createElement('span');
+    statusLabel.className = 'admin-restaurant-status-label';
+    statusLabel.textContent = 'Status do restaurante:';
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = `button ${isOpen ? 'button-secondary' : 'button-primary'} button-small`;
+    toggleBtn.type = 'button';
+    toggleBtn.textContent = isOpen ? 'Fechar restaurante' : 'Abrir restaurante';
+    toggleBtn.addEventListener('click', () => {
+        const newStatus = isOpen ? 'closed' : 'open';
+        setRestaurantStatus(newStatus);
+        showToast(`Restaurante ${newStatus === 'open' ? 'aberto' : 'fechado'}!`, 'success');
+        // Reabrir painel para atualizar
+        closeModal();
+        setTimeout(() => openAdminPanel(), 300);
+    });
+
+    statusControls.append(statusLabel, toggleBtn);
+    card.appendChild(statusControls);
 
     // Botão para editar dados do restaurante (abre o formulário de claim)
     const editBtn = document.createElement('button');
@@ -1129,5 +1190,8 @@ export {
     removeCategory,
     updateOrderAdminStatus,
     getAllOrders,
-    adminState
+    adminState,
+    getRestaurantStatus,
+    setRestaurantStatus,
+    isRestaurantOpen
 };
