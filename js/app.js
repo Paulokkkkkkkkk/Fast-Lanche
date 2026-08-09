@@ -13,6 +13,7 @@ import { setupUserProfile } from './user-profile.js';
 import { setupAdminClaim } from './admin-claim.js';
 import { setupUserNavigation } from './user-navigation.js';
 import { setupAppState } from './app-state.js';
+import { setupUX } from './ux.js';
 import { CUSTOMIZATION_TYPES } from './constants.js';
 import { formatCurrency, showToast, openModal, closeModal, createSpinner, setButtonLoading } from './ui.js';
 
@@ -137,6 +138,7 @@ function setup() {
   setupAppState();
   setupUserNavigation();
   setupRestaurantStatusListener();
+  setupUX();
   setupDemoInteractions();
 }
 

@@ -3,6 +3,7 @@ import { formatCurrency, openModal, closeModal, showToast } from './ui.js';
 import { CUSTOMIZATION_TYPES } from './constants.js';
 import { addToCart } from './cart.js';
 import { isOutOfStock, getAvailableQuantity } from './inventory.js';
+import { addPopAnimation } from './ux.js';
 
 // =========================================================================
 // FUNÇÃO AUXILIAR: Calcular preço total + criar priceDisplay
@@ -37,6 +38,9 @@ function openCustomizationModal(item) {
     if (!item.customization) {
         addToCart(item);
         showToast('Item adicionado ao carrinho.', 'success');
+        // Feedback visual no botão
+        const addBtn = document.querySelector(`.add-to-cart[data-id="${item.id}"]`);
+        if (addBtn) addPopAnimation(addBtn);
         return;
     }
 

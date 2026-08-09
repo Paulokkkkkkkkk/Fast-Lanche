@@ -1,5 +1,6 @@
 // cart.js - logica do carrinho
 import { isOutOfStock, getAvailableQuantity } from './inventory.js';
+import { createEnhancedCartEmptyState, createFreeDeliveryBar } from './ux.js';
 
 const cartItemsContainer = document.getElementById('cart-items');
 const cartCount = document.getElementById('cart-count');
@@ -223,20 +224,7 @@ function getSubtotal() {
 
 function renderEmptyCart() {
   if (!cartItemsContainer) return;
-
-  const emptyItem = document.createElement('li');
-  emptyItem.className = 'empty-state';
-
-  const emoji = document.createElement('span');
-  emoji.className = 'empty-state-icon';
-  emoji.textContent = '🛒';
-
-  const text = document.createElement('span');
-  text.className = 'empty-state-text';
-  text.textContent = 'Seu carrinho esta vazio.';
-
-  emptyItem.append(emoji, text);
-  cartItemsContainer.appendChild(emptyItem);
+  cartItemsContainer.appendChild(createEnhancedCartEmptyState());
 }
 
 function createCustomizationSummary(item) {
@@ -376,6 +364,38 @@ function renderCart() {
   if (cartSubtotal) cartSubtotal.textContent = formatCurrency(cart.subtotal);
   if (cartFee) cartFee.textContent = formatCurrency(cart.deliveryFee);
   if (cartTotal) cartTotal.textContent = formatCurrency(cart.total);
+
+  // Renderizar barra de frete grátis
+  renderFreeDeliveryBar();
+
+  // Disparar evento de atualização do carrinho
+  dispatchCartUpdate();
+}
+
+function renderFreeDeliveryBar() {
+  const cartPanel = document.querySelector('.cart-panel');
+  if (!cartPanel) return;
+
+  // Remover barra existente
+  const existingBar = cartPanel.querySelector('.free-delivery-bar');
+  if (existingBar) existingBar.remove();
+
+  // Remover botão de ir para checkout se existir
+  const existingBtn = document.getElementById('go-to-checkout-btn');
+  if (existingBtn) existingBtn.remove();
+
+  // Adicionar barra de frete grátis após o cart-summary
+  const cartSummary = document.querySelector('.cart-summary');
+  if (cartSummary && cart.items.length) {
+    const freeDeliveryBar = createFreeDeliveryBar(cart.subtotal);
+    cartSummary.after(freeDeliveryBar);
+  }
+}
+
+function dispatchCartUpdate() {
+  document.dispatchEvent(new CustomEvent('cart:update', {
+    detail: { items: cart.items.length, subtotal: cart.subtotal }
+  }));
 }
 
 function setupCartControls() {

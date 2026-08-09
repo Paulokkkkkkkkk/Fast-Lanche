@@ -1,6 +1,7 @@
 // order-tracking.js - Sistema de Acompanhamento de Pedido (modal pop-up)
 import { formatCurrency, openModal, closeModal, showToast } from './ui.js';
 import { getOrderQueuePosition, onQueueUpdated, notifyQueueUpdated } from './order-queue.js';
+import { createProcessingOrderState } from './ux.js';
 
 const ORDER_STATUS = {
     RECEIVED: 'Pedido recebido',
@@ -228,6 +229,11 @@ function buildTrackModalContent(order) {
     const statusBar = renderStatusBar(order.status || ORDER_STATUS.RECEIVED);
     content.appendChild(statusBar);
 
+    // Estado de processamento com próximas etapas
+    const nextSteps = getNextSteps(order.status || ORDER_STATUS.RECEIVED);
+    const processingState = createProcessingOrderState(order.orderNumber, order.status || ORDER_STATUS.RECEIVED, nextSteps);
+    content.appendChild(processingState);
+
     // Details
     const details = document.createElement('div');
     details.className = 'track-details';
@@ -276,6 +282,17 @@ function buildTrackModalContent(order) {
  * Renderiza a seção de fila de pedidos para exibir ao cliente.
  * Retorna o elemento ou null se o pedido não estiver mais na fila.
  */
+function getNextSteps(currentStatus) {
+    const stepsMap = {
+        [ORDER_STATUS.RECEIVED]: ['Pagamento será confirmado', 'Pedido entrará na fila de preparo'],
+        [ORDER_STATUS.PAYMENT_CONFIRMED]: ['Pedido será enviado para a cozinha', 'Preparação do pedido'],
+        [ORDER_STATUS.PREPARING]: ['Pedido sairá para entrega', 'Você poderá confirmar o recebimento'],
+        [ORDER_STATUS.OUT_FOR_DELIVERY]: ['Confirme o recebimento do pedido'],
+        [ORDER_STATUS.DELIVERED]: []
+    };
+    return stepsMap[currentStatus] || [];
+}
+
 function renderQueueSection(order) {
     const queueInfo = getOrderQueuePosition(order.orderNumber);
 

@@ -271,6 +271,15 @@ function getStockStatusText(productId) {
 // =========================================================================
 function setupInventory() {
     loadInventory();
+
+    // Expor funções de consulta para evitar dependência circular
+    // com menu-store.js (que importa addUnavailableOverlay de ux.js)
+    window.__inventoryAPI = {
+        isOutOfStock,
+        isLowStock,
+        getAvailableQuantity,
+        getStock
+    };
 }
 
 export {

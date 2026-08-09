@@ -1,6 +1,7 @@
 // menu-store.js - Dados e funções do cardápio (módulo separado para evitar dependência circular)
 import { CUSTOMIZATION_TYPES } from './constants.js';
 import { formatCurrency } from './ui.js';
+import { addUnavailableOverlay } from './ux.js';
 
 // Mapeamento de categorias para imagens SVG animadas
 const CATEGORY_IMAGES = {
@@ -640,6 +641,12 @@ function createMenuCard(item) {
 
     footer.append(price, button);
     card.append(visual, category, title, description, footer);
+
+    // Verificar se o produto está sem estoque e aplicar overlay
+    const inventoryAPI = window.__inventoryAPI || {};
+    if (typeof inventoryAPI.isOutOfStock === 'function' && inventoryAPI.isOutOfStock(item.id)) {
+        addUnavailableOverlay(card);
+    }
 
     return card;
 }
