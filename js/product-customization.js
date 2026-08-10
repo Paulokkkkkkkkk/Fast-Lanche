@@ -62,7 +62,7 @@ function openCustomizationModal(item) {
 // =========================================================================
 
 function openHalfHalfModal(item) {
-    const { flavors, extras } = item.customization;
+    const { flavors, extras } = item.customization || {};
     const basePrice = item.price;
     let selectedFlavor1 = null;
     let selectedFlavor2 = null;
@@ -72,9 +72,9 @@ function openHalfHalfModal(item) {
     const baseName = item.name.replace(/^Pizza\s+/i, '').trim();
 
     // Encontra o sabor que corresponde ao nome base da pizza
-    const defaultFlavor = flavors.find(f =>
+    const defaultFlavor = flavors ? flavors.find(f =>
         f.name.toLowerCase() === baseName.toLowerCase()
-    );
+    ) : null;
 
     const bodyContent = document.createElement('div');
     bodyContent.className = 'customization-body';
@@ -83,81 +83,34 @@ function openHalfHalfModal(item) {
 
     const title = document.createElement('p');
     title.style.fontWeight = '700';
-    title.textContent = `Escolha 2 sabores para sua ${item.name}`;
+    title.textContent = `Escolha até 2 sabores para sua ${item.name}`;
     bodyContent.appendChild(title);
 
     // --- Grid de sabores ---
     const flavorsGrid = document.createElement('div');
     flavorsGrid.className = 'customization-flavors-grid';
 
-    flavors.forEach(flavor => {
-        const label = document.createElement('label');
-        label.className = 'customization-flavor-label';
-
-        const input = document.createElement('input');
-        input.type = 'checkbox';
-        input.value = flavor.name;
-        input.dataset.price = flavor.price;
-
-        // Pré-seleciona o sabor que corresponde ao nome base da pizza
-        const isDefault = defaultFlavor && flavor.name === defaultFlavor.name;
-        if (isDefault) {
-            input.checked = true;
-            selectedFlavor1 = flavor;
-        }
-
-        const info = document.createElement('span');
-        info.className = 'customization-flavor-info';
-        const priceText = flavor.price > 0 ? ` (+${formatCurrency(flavor.price)})` : '';
-        info.textContent = `${flavor.name}${priceText}`;
-
-        label.append(input, info);
-
-        input.addEventListener('change', () => {
-            const checked = flavorsGrid.querySelectorAll('input[type="checkbox"]:checked');
-
-            if (input.checked && checked.length > 2) {
-                input.checked = false;
-                showToast('Selecine no máximo 2 sabores.', 'warning');
-                return;
-            }
-
-            if (input.checked) {
-                if (!selectedFlavor1) {
-                    selectedFlavor1 = flavor;
-                } else if (!selectedFlavor2) {
-                    selectedFlavor2 = flavor;
-                }
-            } else {
-                if (selectedFlavor1?.name === flavor.name) {
-                    selectedFlavor1 = selectedFlavor2;
-                    selectedFlavor2 = null;
-                } else if (selectedFlavor2?.name === flavor.name) {
-                    selectedFlavor2 = null;
-                }
-            }
-
-            updateFlavorSummary();
-            updateTotalPrice();
-        });
-
-        flavorsGrid.appendChild(label);
-    });
-
-    // Atualiza o resumo inicial se já tiver um sabor pré-selecionado
-    if (selectedFlavor1) {
-        updateFlavorSummary();
-        updateTotalPrice();
-    }
-
-    bodyContent.appendChild(flavorsGrid);
-
     // --- Resumo dos sabores ---
     const summaryFlavors = document.createElement('div');
     summaryFlavors.className = 'customization-summary';
     summaryFlavors.style.color = 'var(--cinza-500)';
     summaryFlavors.innerHTML = 'Selecione pelo menos 1 sabor para continuar.';
-    bodyContent.appendChild(summaryFlavors);
+
+    // --- Preço total com atualização ao vivo ---
+    const priceDisplay = createPriceDisplay(basePrice);
+
+    function calcExtraPrice() {
+        let extra = 0;
+        if (selectedFlavor1 && selectedFlavor1.price > 0) extra += selectedFlavor1.price;
+        if (selectedFlavor2 && selectedFlavor2.price > 0) extra += selectedFlavor2.price;
+        selectedExtras.forEach(e => { extra += e.price; });
+        return extra;
+    }
+
+    function updateTotalPrice() {
+        const extra = calcExtraPrice();
+        updatePriceDisplay(priceDisplay, basePrice, extra);
+    }
 
     function updateFlavorSummary() {
         const names = [];
@@ -175,6 +128,65 @@ function openHalfHalfModal(item) {
             summaryFlavors.innerHTML = `<strong>Sabores:</strong> Meio ${names[0]} / Meio ${names[1]}`;
         }
     }
+
+    if (Array.isArray(flavors)) {
+        flavors.forEach(flavor => {
+            const label = document.createElement('label');
+            label.className = 'customization-flavor-label';
+
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.value = flavor.name;
+            input.dataset.price = flavor.price;
+
+            // Pré-seleciona o sabor que corresponde ao nome base da pizza
+            const isDefault = defaultFlavor && flavor.name === defaultFlavor.name;
+            if (isDefault) {
+                input.checked = true;
+                selectedFlavor1 = flavor;
+            }
+
+            const info = document.createElement('span');
+            info.className = 'customization-flavor-info';
+            const priceText = flavor.price > 0 ? ` (+${formatCurrency(flavor.price)})` : '';
+            info.textContent = `${flavor.name}${priceText}`;
+
+            label.append(input, info);
+
+            input.addEventListener('change', () => {
+                const checked = flavorsGrid.querySelectorAll('input[type="checkbox"]:checked');
+
+                if (input.checked && checked.length > 2) {
+                    input.checked = false;
+                    showToast('Selecione no máximo 2 sabores.', 'warning');
+                    return;
+                }
+
+                if (input.checked) {
+                    if (!selectedFlavor1) {
+                        selectedFlavor1 = flavor;
+                    } else if (!selectedFlavor2) {
+                        selectedFlavor2 = flavor;
+                    }
+                } else {
+                    if (selectedFlavor1?.name === flavor.name) {
+                        selectedFlavor1 = selectedFlavor2;
+                        selectedFlavor2 = null;
+                    } else if (selectedFlavor2?.name === flavor.name) {
+                        selectedFlavor2 = null;
+                    }
+                }
+
+                updateFlavorSummary();
+                updateTotalPrice();
+            });
+
+            flavorsGrid.appendChild(label);
+        });
+    }
+
+    bodyContent.appendChild(flavorsGrid);
+    bodyContent.appendChild(summaryFlavors);
 
     // --- Extras (opcionais) ---
     if (extras && extras.length > 0) {
@@ -229,21 +241,12 @@ function openHalfHalfModal(item) {
     obsField.appendChild(obsInput);
     bodyContent.appendChild(obsField);
 
-    // --- Preço total com atualização ao vivo ---
-    const priceDisplay = createPriceDisplay(basePrice);
     bodyContent.appendChild(priceDisplay);
 
-    function calcExtraPrice() {
-        let extra = 0;
-        if (selectedFlavor1 && selectedFlavor1.price > 0) extra += selectedFlavor1.price;
-        if (selectedFlavor2 && selectedFlavor2.price > 0) extra += selectedFlavor2.price;
-        selectedExtras.forEach(e => { extra += e.price; });
-        return extra;
-    }
-
-    function updateTotalPrice() {
-        const extra = calcExtraPrice();
-        updatePriceDisplay(priceDisplay, basePrice, extra);
+    // Atualiza o resumo inicial e preço se já tiver um sabor pré-selecionado
+    if (selectedFlavor1) {
+        updateFlavorSummary();
+        updateTotalPrice();
     }
 
     // --- Ações do modal ---

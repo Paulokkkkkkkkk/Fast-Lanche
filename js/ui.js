@@ -50,6 +50,7 @@ function openModal({ title, bodyContent, actions = [] }) {
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
     const modalActions = document.getElementById('modal-actions');
+    const modalClose = document.getElementById('modal-close');
 
     if (!modalOverlay || !modalTitle || !modalBody || !modalActions) return;
 
@@ -77,6 +78,16 @@ function openModal({ title, bodyContent, actions = [] }) {
         if (action.onClick) btn.addEventListener('click', action.onClick);
         modalActions.appendChild(btn);
     });
+
+    if (modalClose) {
+        modalClose.onclick = () => closeModal();
+    }
+
+    modalOverlay.onclick = (e) => {
+        if (e.target === modalOverlay) {
+            closeModal();
+        }
+    };
 
     modalOverlay.classList.remove('closing');
     modalOverlay.classList.add('active');

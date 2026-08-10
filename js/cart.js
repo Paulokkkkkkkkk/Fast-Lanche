@@ -59,6 +59,7 @@ function isStorageAvailable() {
 function getSerializableCart() {
   return {
     items: cart.items.map(item => ({
+      cartItemId: item.cartItemId || `${item.id}_${Math.random().toString(36).substring(2, 9)}`,
       id: item.id,
       name: item.name,
       price: item.price,
@@ -99,6 +100,7 @@ function normalizeStoredItem(item) {
   const maxQuantity = Number(item.maxQuantity) || 99;
 
   return {
+    cartItemId: item.cartItemId || `${item.id}_${Math.random().toString(36).substring(2, 9)}`,
     id: Number(item.id),
     name: item.name,
     price: Math.max(Number(item.price) || 0, 0),
@@ -143,26 +145,36 @@ function loadCart() {
   }
 }
 
-function getCartItem(itemId) {
-  return cart.items.find(item => item.id === Number(itemId));
+function getCartItem(identifier) {
+  if (!identifier) return null;
+  return cart.items.find(item => item.cartItemId === String(identifier) || item.id === Number(identifier));
+}
+
+function isSameCustomization(cust1, cust2) {
+  if (!cust1 && !cust2) return true;
+  if (!cust1 || !cust2) return false;
+  return JSON.stringify(cust1) === JSON.stringify(cust2);
 }
 
 function addToCart(item) {
-  if (!item || !item.active) return cart;
+  if (!item || item.active === false) return cart;
 
-  const existing = getCartItem(item.id);
+  const itemCust = item._customization || null;
+  const existing = cart.items.find(i => i.id === Number(item.id) && isSameCustomization(i._customization, itemCust));
 
   if (existing) {
     existing.quantity = normalizeQuantity(existing.quantity + 1, existing.maxQuantity);
   } else {
+    const cartItemId = `${item.id}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     cart.items.push({
-      id: item.id,
+      cartItemId,
+      id: Number(item.id),
       name: item.name,
       price: Number(item.price) || 0,
       unitPrice: Number(item.unitPrice) || Number(item.price) || 0,
       quantity: 1,
       maxQuantity: item.maxQuantity || 99,
-      _customization: item._customization || null
+      _customization: itemCust
     });
   }
 
@@ -172,8 +184,8 @@ function addToCart(item) {
   return cart;
 }
 
-function incrementItem(itemId) {
-  const item = getCartItem(itemId);
+function incrementItem(identifier) {
+  const item = getCartItem(identifier);
   if (!item) return cart;
 
   item.quantity = normalizeQuantity(item.quantity + 1, item.maxQuantity);
@@ -183,12 +195,12 @@ function incrementItem(itemId) {
   return cart;
 }
 
-function decrementItem(itemId) {
-  const item = getCartItem(itemId);
+function decrementItem(identifier) {
+  const item = getCartItem(identifier);
   if (!item) return cart;
 
   if (item.quantity <= 1) {
-    removeItem(itemId);
+    removeItem(identifier);
     return cart;
   }
 
@@ -199,8 +211,8 @@ function decrementItem(itemId) {
   return cart;
 }
 
-function removeItem(itemId) {
-  const index = cart.items.findIndex(item => item.id === Number(itemId));
+function removeItem(identifier) {
+  const index = cart.items.findIndex(item => item.cartItemId === String(identifier) || item.id === Number(identifier));
   if (index === -1) return cart;
 
   cart.items.splice(index, 1);
@@ -311,10 +323,13 @@ function createCartItemElement(item) {
   const controls = document.createElement('div');
   controls.className = 'cart-item-controls';
 
+  const cartItemIdVal = item.cartItemId || String(item.id);
+
   const decrementButton = document.createElement('button');
   decrementButton.type = 'button';
   decrementButton.className = 'cart-control';
   decrementButton.dataset.cartAction = 'decrement';
+  decrementButton.dataset.cartItemId = cartItemIdVal;
   decrementButton.dataset.id = String(item.id);
   decrementButton.textContent = '-';
   decrementButton.setAttribute('aria-label', `Diminuir quantidade de ${item.name}`);
@@ -327,6 +342,7 @@ function createCartItemElement(item) {
   incrementButton.type = 'button';
   incrementButton.className = 'cart-control';
   incrementButton.dataset.cartAction = 'increment';
+  incrementButton.dataset.cartItemId = cartItemIdVal;
   incrementButton.dataset.id = String(item.id);
   incrementButton.textContent = '+';
   incrementButton.disabled = item.quantity >= item.maxQuantity;
@@ -336,6 +352,7 @@ function createCartItemElement(item) {
   removeButton.type = 'button';
   removeButton.className = 'cart-remove';
   removeButton.dataset.cartAction = 'remove';
+  removeButton.dataset.cartItemId = cartItemIdVal;
   removeButton.dataset.id = String(item.id);
   removeButton.textContent = 'Remover';
 
@@ -406,11 +423,11 @@ function setupCartControls() {
     if (!(target instanceof HTMLElement)) return;
 
     const action = target.dataset.cartAction;
-    const itemId = Number(target.dataset.id);
+    const identifier = target.dataset.cartItemId || target.dataset.id;
 
-    if (action === 'increment') incrementItem(itemId);
-    if (action === 'decrement') decrementItem(itemId);
-    if (action === 'remove') removeItem(itemId);
+    if (action === 'increment') incrementItem(identifier);
+    if (action === 'decrement') decrementItem(identifier);
+    if (action === 'remove') removeItem(identifier);
   });
 }
 

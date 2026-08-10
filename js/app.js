@@ -63,8 +63,9 @@ function setupDemoInteractions() {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
 
-    if (target.matches('.add-to-cart')) {
-      const itemId = Number(target.dataset.id);
+    const addBtn = target.closest('.add-to-cart');
+    if (addBtn) {
+      const itemId = Number(addBtn.dataset.id);
       const selectedItem = menuItems.find(item => item.id === itemId);
 
       if (selectedItem) {

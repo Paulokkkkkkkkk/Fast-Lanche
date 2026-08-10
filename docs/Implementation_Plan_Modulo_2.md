@@ -1371,7 +1371,7 @@ Exemplos:
 
 ---
 
-# FASE 27 — TESTES COMPLETOS
+# FASE 27 — TESTES COMPLETOS ✅
 
 ## Objetivo
 
