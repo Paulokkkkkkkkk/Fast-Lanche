@@ -4082,3 +4082,495 @@ button:disabled .spinner {
     padding: .2rem .5rem;
   }
 }
+
+/* ============================================
+   FASE 28 — SEGUNDA RODADA DE RESPONSIVIDADE
+   ============================================ */
+
+/* --------------------------------------------
+   Header: avatar + toggle no mobile
+   -------------------------------------------- */
+
+@media (max-width: 720px) {
+
+  /* No mobile, o avatar deve ficar ao lado do toggle, dentro do header-row */
+  .header-layout {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "header-row profile"
+      "nav nav";
+    align-items: center;
+  }
+
+  .header-row {
+    grid-area: header-row;
+    width: 100%;
+    justify-content: space-between;
+    padding-right: var(--space-1);
+  }
+
+  .profile-header-container {
+    grid-area: profile;
+    position: static;
+    transform: none;
+    justify-self: end;
+  }
+
+  .main-nav {
+    grid-area: nav;
+  }
+
+  /* Quando o menu está aberto, o avatar permanece no topo direito */
+  .main-nav.open~.profile-header-container {
+    position: static;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------
+   Cards do cardápio: melhor espaçamento em telas médias
+   -------------------------------------------- */
+
+@media (min-width:721px) and (max-width: 900px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .menu-item-visual {
+    min-height: 120px;
+  }
+}
+
+/* --------------------------------------------
+   Seção heading: evitar sobreposição em telas estreitas
+   -------------------------------------------- */
+
+@media (max-width: 480px) {
+  .section-heading {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .menu-tools {
+    width: 100%;
+  }
+
+  .menu-tools .field-inline {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .menu-tools .field-inline input,
+  .menu-tools .field-inline select {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------
+   Admin: tabs em telas pequenas
+   -------------------------------------------- */
+
+@media (max-width: 480px) {
+  .admin-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+  }
+
+  .admin-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .admin-tab {
+    flex: 0 0 auto;
+    min-width: 90px;
+    padding: .6rem .75rem;
+    font-size: .85rem;
+    white-space: nowrap;
+  }
+
+  .admin-modal-content {
+    max-height: 70vh;
+  }
+
+  .admin-section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .admin-section-header .admin-add-btn {
+    width: 100%;
+  }
+
+  /* Produtos: ações empilham abaixo das informações */
+  .admin-product-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-product-info {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .admin-product-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .admin-product-actions .button {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Formulário de produto: ações empilham */
+  .admin-form-actions {
+    flex-direction: column;
+  }
+
+  .admin-form-actions .button {
+    width: 100%;
+  }
+
+  /* Categorias: formulário empilha */
+  .admin-category-add {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .admin-category-add .button {
+    width: 100%;
+  }
+
+  .admin-category-item {
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .admin-category-actions {
+    width: 100%;
+    display: flex;
+    gap: .5rem;
+  }
+
+  .admin-category-actions .button {
+    flex: 1;
+  }
+
+  /* Pedidos: filtro empilha */
+  .admin-filter-bar {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .admin-filter-select {
+    width: 100%;
+  }
+
+  .admin-order-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-order-status-select {
+    width: 100%;
+  }
+
+  .admin-order-values {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .25rem;
+  }
+
+  /* Estoque: controles empilham */
+  .admin-inventory-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-inventory-controls .field-inline {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-inventory-qty-input,
+  .admin-inventory-threshold-input {
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .admin-inventory-controls .button {
+    width: 100%;
+  }
+
+  /* Restaurant status controls */
+  .admin-restaurant-status-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .5rem;
+  }
+
+  .admin-restaurant-status-controls .button {
+    width: 100%;
+  }
+
+  .admin-restaurant-name-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .35rem;
+  }
+}
+
+/* --------------------------------------------
+   Admin Claim Form: responsividade
+   -------------------------------------------- */
+
+@media (max-width: 480px) {
+  .admin-claim-hours-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .admin-claim-form .field {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------
+   My Orders: cards em telas pequenas
+   -------------------------------------------- */
+
+@media (max-width: 480px) {
+  .my-order-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .35rem;
+  }
+
+  .my-order-card-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .25rem;
+  }
+
+  .claim-status-data-row {
+    flex-direction: column;
+    gap: .15rem;
+  }
+
+  .claim-status-data-row dd {
+    text-align: left;
+  }
+}
+
+/* --------------------------------------------
+   Receipt / Comprovante: responsividade
+   -------------------------------------------- */
+
+@media (max-width: 480px) {
+  .receipt-header {
+    flex-direction: column;
+  }
+
+  .receipt-id-group {
+    text-align: left;
+  }
+
+  .receipt-info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .15rem;
+  }
+
+  .receipt-info-value {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .receipt-item-row {
+    flex-direction: column;
+    gap: .35rem;
+  }
+
+  .receipt-item-total {
+    padding-top: 0;
+  }
+
+  .receipt-total-row {
+    font-size: 1rem;
+  }
+
+  .receipts-list-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+  }
+
+  .receipts-card-total {
+    white-space: normal;
+  }
+}
+
+/* --------------------------------------------
+   Checkout: ajustes finos
+   -------------------------------------------- */
+
+@media (max-width: 480px) {
+  .form-grid {
+    gap: var(--space-2);
+  }
+
+  .field-checkbox {
+    align-items: flex-start;
+  }
+
+  .field-checkbox input[type="checkbox"] {
+    margin-top: .15rem;
+    flex-shrink: 0;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-actions .button {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------
+   Feedback: ajustes
+   -------------------------------------------- */
+
+@media (max-width: 480px) {
+  .feedback-layout {
+    gap: var(--space-3);
+  }
+
+  .rating-summary {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------
+   Dropdown do perfil: posicionamento seguro
+   -------------------------------------------- */
+
+@media (max-width: 480px) {
+  .profile-dropdown {
+    width: min(260px, calc(100vw - 16px));
+    right: .5rem;
+    left: auto !important;
+  }
+}
+
+/* --------------------------------------------
+   Touch: mais botões com área mínima de toque
+   -------------------------------------------- */
+
+@media (hover:none) and (pointer:coarse) {
+  .profile-dropdown-item {
+    min-height: 48px;
+  }
+
+  .admin-tab {
+    min-height: 44px;
+  }
+
+  .admin-filter-select,
+  .admin-order-status-select {
+    min-height: 44px;
+  }
+
+  .admin-category-actions .button,
+  .admin-product-actions .button {
+    min-height: 44px;
+  }
+
+  .admin-inventory-qty-input,
+  .admin-inventory-threshold-input {
+    min-height: 44px;
+    width: 90px;
+  }
+
+  .admin-inventory-controls .button {
+    min-height: 44px;
+  }
+
+  .receipts-list-card {
+    min-height: 44px;
+  }
+
+  .my-order-card {
+    min-height: 44px;
+  }
+
+  .field-checkbox {
+    min-height: 44px;
+  }
+}
+
+/* --------------------------------------------
+   Ajuste do modal em telas muito pequenas
+   -------------------------------------------- */
+
+@media (max-width: 380px) {
+  .modal {
+    padding: var(--space-3);
+    max-height: 92vh;
+  }
+
+  .modal-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .modal-body {
+    font-size: .9rem;
+  }
+
+  .modal-actions {
+    gap: .5rem;
+  }
+}
+
+/* --------------------------------------------
+   Landscape em tablets pequenos (altura limitada)
+   -------------------------------------------- */
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .modal-overlay {
+    padding: .5rem;
+  }
+
+  .modal {
+    max-height: 94vh;
+    padding: var(--space-3);
+  }
+
+  .admin-modal-content {
+    max-height: 75vh;
+  }
+}
+
+/* --------------------------------------------
+   Grid de produtos: 4 colunas em telas muito largas
+   -------------------------------------------- */
+
+@media (min-width: 1400px) {
+  .cards-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .skeleton-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
