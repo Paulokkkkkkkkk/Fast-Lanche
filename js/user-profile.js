@@ -1,5 +1,6 @@
 // user-profile.js - Sistema de Perfil de Usuário
 // Fase 23 - Gerencia dados pessoais, avatar e preferências do usuário
+import { validateProfileInput, sanitizeProfileData } from './security.js';
 
 const STORAGE_KEY = 'fastlanche_user_profile';
 
@@ -118,15 +119,18 @@ function dispatchAppStateSync() {
 }
 
 function updateProfile(data) {
-    const name = normalizeText(data.name || '');
-    const email = normalizeText(data.email || '');
-    const phone = normalizeText(data.phone || '');
-    const address = normalizeText(data.address || '');
+    // Sanitizar datos con el módulo de seguridad
+    const sanitized = sanitizeProfileData({
+        name: data.name || '',
+        email: data.email || '',
+        phone: data.phone || '',
+        address: data.address || ''
+    });
 
-    currentProfile.name = name;
-    currentProfile.email = email;
-    currentProfile.phone = phone;
-    currentProfile.address = address;
+    currentProfile.name = sanitized.name;
+    currentProfile.email = sanitized.email;
+    currentProfile.phone = sanitized.phone;
+    currentProfile.address = sanitized.address;
 
     if (data.preferences) {
         currentProfile.preferences = {

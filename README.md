@@ -131,6 +131,7 @@ Fast-Lanche/
 │   ├── app-state.js           # Estado global compartilhado
 │   ├── ux.js                  # Estados visuais e UX
 │   ├── ui.js                  # Helpers de UI (toasts, modais)
+│   ├── security.js            # Seguridad: sanitización y validación (Fase 29)
 │   └── constants.js           # Constantes compartilhadas
 └── assets/
     ├── icons/                 # Ícones da interface (SVG)

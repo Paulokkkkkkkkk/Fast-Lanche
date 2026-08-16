@@ -2,6 +2,7 @@
 // Fase 24 - Gerencia solicitação e concessão de status de administrador
 
 import { showToast } from './ui.js';
+import { validateClaimInput } from './security.js';
 
 const STORAGE_KEY = 'fastlanche_admin_claim';
 
@@ -151,21 +152,24 @@ function getClaimStatusText() {
 // ============================================
 
 function submitClaim(data) {
-    const validation = validateClaimData(data);
-    if (!validation.valid) {
+    const validation = validateClaimInput(data);
+    if (!validation.isValid) {
         return { success: false, errors: validation.errors };
     }
 
+    // Usar datos sanitizados
+    const sanitized = validation.sanitized;
+
     // Salvar dados do restaurante
     currentClaim.adminData = {
-        restaurantName: normalizeText(data.restaurantName),
-        address: normalizeText(data.address),
-        phone: normalizeText(data.phone),
+        restaurantName: sanitized.restaurantName,
+        address: sanitized.address,
+        phone: sanitized.phone,
         openingHours: {
-            open: data.openingOpen || '',
-            close: data.openingClose || ''
+            open: sanitized.openingOpen,
+            close: sanitized.openingClose
         },
-        description: normalizeText(data.description || '')
+        description: sanitized.description
     };
     currentClaim.submittedAt = new Date().toISOString();
 

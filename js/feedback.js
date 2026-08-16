@@ -1,5 +1,6 @@
 // feedback.js - camada de dados e persistencia de avaliacoes
 import { openModal, closeModal, showToast } from './ui.js';
+import { validateFeedbackInput } from './security.js';
 
 const FEEDBACKS_STORAGE_KEY = 'fastlanche_feedbacks';
 
@@ -232,26 +233,19 @@ function setupFeedback() {
     const rating = Number(formData.get('rating'));
     const comment = (formData.get('comment') || '').trim();
 
-    if (!name) {
-      setFeedbackMessage(messageEl, 'Por favor, insira seu nome.', 'error');
-      showToast('Por favor, insira seu nome.', 'error');
+    // Fase 29: Validar com módulo de segurança
+    const validation = validateFeedbackInput({ name, rating, comment });
+    if (!validation.isValid) {
+      const errorMessage = validation.errors[0];
+      setFeedbackMessage(messageEl, errorMessage, 'error');
+      showToast(errorMessage, 'error');
       return;
     }
 
-    if (Number.isNaN(rating) || rating < 1 || rating > 5) {
-      setFeedbackMessage(messageEl, 'A nota deve ser entre 1 e 5.', 'error');
-      showToast('A nota deve ser entre 1 e 5.', 'error');
-      return;
-    }
-
-    if (comment.length < 10) {
-      setFeedbackMessage(messageEl, 'O comentário deve conter pelo menos 10 caracteres.', 'error');
-      showToast('O comentário deve conter pelo menos 10 caracteres.', 'error');
-      return;
-    }
+    const sanitized = validation.sanitized;
 
     // Prevenção de duplicidade na mesma sessão
-    const feedbackKey = `${name.toLowerCase()}-${rating}-${comment.toLowerCase()}`;
+    const feedbackKey = `${sanitized.name.toLowerCase()}-${sanitized.rating}-${sanitized.comment.toLowerCase()}`;
     if (sessionFeedbacks.has(feedbackKey)) {
       setFeedbackMessage(messageEl, 'Você já enviou este feedback nesta sessão.', 'error');
       showToast('Você já enviou este feedback nesta sessão.', 'error');
@@ -259,20 +253,20 @@ function setupFeedback() {
     }
 
     const newFeedback = {
-      name: name || 'Cliente',
-      rating: rating,
-      comment: comment
+      name: sanitized.name || 'Cliente',
+      rating: sanitized.rating,
+      comment: sanitized.comment
     };
 
     const success = addFeedback(newFeedback);
 
     if (success) {
       sessionFeedbacks.add(feedbackKey);
-      showFeedbackConfirmationModal(name, rating, comment);
+      showFeedbackConfirmationModal(sanitized.name, sanitized.rating, sanitized.comment);
       setFeedbackMessage(messageEl, 'Feedback enviado com sucesso!', 'success');
       showToast('Feedback enviado com sucesso!', 'success');
       form.reset();
-      // Atualiza o texto do rating para refletir o valor resetado (5)
+      // Atualiza o rating para refletir o valor resetado (5)
       if (ratingValue) ratingValue.textContent = '5';
       renderFeedbacks();
     } else {

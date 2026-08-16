@@ -1,6 +1,7 @@
 // booking.js - lógica de reservas de mesas e persistência local
 import { openModal, closeModal, showToast } from './ui.js';
 import { setButtonLoading } from './ui.js';
+import { sanitizeBookingData } from './security.js';
 
 const BOOKINGS_STORAGE_KEY = 'fastlanche_bookings';
 
@@ -99,13 +100,14 @@ function validateBooking(dateStr, timeStr, people) {
 }
 
 function submitBooking(payload) {
-  console.log('Reserva enviada:', payload);
+  // Fase 29: Sanitizar dados da reserva
+  const sanitized = sanitizeBookingData(payload);
 
   const newBooking = {
     id: Date.now(),
-    date: payload.date,
-    time: payload.time,
-    guests: Number(payload.guests),
+    date: sanitized.date,
+    time: sanitized.time,
+    guests: sanitized.guests,
     createdAt: new Date().toISOString()
   };
 

@@ -5,6 +5,7 @@ import { ORDER_STATUS } from './order-tracking.js';
 import { createAndShowReceipt } from './receipt.js';
 import { validateCartStock, consumeStockForOrder } from './inventory.js';
 import { getProfileDataForCheckout, isProfileComplete, getProfile } from './user-profile.js';
+import { validateCheckoutInput, sanitizeCheckoutData } from './security.js';
 
 const checkoutForm = document.getElementById('checkout-form');
 const checkoutFeedback = document.getElementById('checkout-feedback');
@@ -246,13 +247,20 @@ async function handleCheckoutSubmit(event) {
   }
 
   const data = getCheckoutData(form);
-  const validation = validateCheckout(data);
+  const validation = validateCheckoutInput(data);
 
   if (!validation.isValid) {
     setFeedback(validation.errors[0], 'error');
     showToast(validation.errors[0], 'error');
     return;
   }
+
+  // Usar datos sanitizados
+  data.customerName = validation.sanitized.name;
+  data.phone = validation.sanitized.phone;
+  data.address = validation.sanitized.address;
+  data.document = validation.sanitized.document;
+  data.paymentMethod = validation.sanitized.paymentMethod;
 
   try {
     // Fase 22: Validar estoque antes de processar pagamento
