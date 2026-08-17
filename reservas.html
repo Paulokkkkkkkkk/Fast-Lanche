@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Fast Lanche - Reservas de mesas. Agende sua visita com antecedencia." />
+    <meta name="theme-color" content="#161616" />
+    <meta name="robots" content="index, follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta property="og:title" content="Fast Lanche - Reservas" />
+    <meta property="og:description" content="Reserve sua mesa com antecedencia." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:image" content="assets/logo/fast-lanche-logo.svg" />
+    <title>Fast Lanche - Reservas</title>
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <main id="top">
+        <section id="booking-page" class="page-section booking-page-section" aria-labelledby="booking-page-title">
+            <div class="container split-layout">
+                <div class="section-copy">
+                    <p class="section-kicker">Agendamento</p>
+                    <h1 id="booking-page-title">Reserve uma mesa</h1>
+                    <p>Escolha data, horario e quantidade de pessoas para organizar sua visita com antecedencia.</p>
+                </div>
+                <form id="booking-form" class="panel-form">
+                    <label class="field" for="booking-date">
+                        <span>Data</span>
+                        <input id="booking-date" name="date" type="date" required>
+                    </label>
+                    <label class="field" for="booking-time">
+                        <span>Horario</span>
+                        <input id="booking-time" name="time" type="time" min="11:00" max="23:00" required>
+                    </label>
+                    <label class="field" for="booking-guests">
+                        <span>Pessoas</span>
+                        <input id="booking-guests" name="guests" type="number" min="1" max="12" value="2" required>
+                    </label>
+                    <button class="button button-primary" type="submit">Confirmar reserva</button>
+                    <p id="booking-feedback" class="form-feedback" aria-live="polite"></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal overlay para confirmacoes -->
+    <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title"></h3>
+                <button class="modal-close" id="modal-close" type="button" aria-label="Fechar modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-actions" id="modal-actions"></div>
+        </div>
+    </div>
+
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script type="module" src="js/page-init.js"></script>
+</body>
+
+</html>

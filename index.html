@@ -16,7 +16,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="pt_BR" />
   <meta property="og:image" content="assets/logo/fast-lanche-logo.svg" />
-  <title>Fast Lanche</title>
+  <title>Fast Lanche - Home</title>
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
   <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
   <link rel="preload" href="css/styles.css" as="style">
@@ -24,28 +24,6 @@
 </head>
 
 <body>
-  <header class="site-header">
-    <div class="container header-layout">
-      <div class="header-row">
-        <a class="brand" href="#top" aria-label="Fast Lanche - inicio">Fast Lanche</a>
-        <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
-          <span class="nav-toggle-bar"></span>
-          <span class="nav-toggle-bar"></span>
-          <span class="nav-toggle-bar"></span>
-        </button>
-      </div>
-      <nav class="main-nav" id="main-nav" aria-label="Navegacao principal">
-        <a href="#menu">Cardapio</a>
-        <a href="#cart">Carrinho</a>
-        <a href="#checkout">Checkout</a>
-        <a href="#booking">Reserva</a>
-        <a href="#feedback">Feedback</a>
-      </nav>
-      <!-- Container do perfil do usuario (inserido via JS) -->
-      <div id="profile-header-container" class="profile-header-container"></div>
-    </div>
-  </header>
-
   <main id="top">
     <section class="hero" aria-labelledby="hero-title">
       <div class="container hero-layout">
@@ -54,8 +32,8 @@
           <h1 id="hero-title">Fast Lanche</h1>
           <p>Monte seu pedido, acompanhe o total e reserve uma mesa em uma experiencia simples e rapida.</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#menu">Ver cardapio</a>
-            <a class="button button-secondary" href="#booking">Reservar mesa</a>
+            <a class="button button-primary" href="cardapio.html">Ver cardapio</a>
+            <a class="button button-secondary" href="reservas.html">Reservar mesa</a>
           </div>
         </div>
         <div class="hero-feature" aria-label="Pedido em destaque">
@@ -71,178 +49,84 @@
       </div>
     </section>
 
-    <section id="menu" class="page-section menu-section" aria-labelledby="menu-title">
+    <section id="featured-product" class="page-section featured-section" aria-labelledby="featured-title">
       <div class="container">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">Cardápio online</p>
-            <h2 id="menu-title">Escolha seu lanche</h2>
-          </div>
-          <div class="menu-tools" aria-label="Filtros do cardapio">
-            <label class="field field-inline" for="search-input">
-              <span>Buscar</span>
-              <input id="search-input" type="search" placeholder="Nome ou descricao">
-            </label>
-            <label class="field field-inline" for="category-filter">
-              <span>Categoria</span>
-              <select id="category-filter">
-                <option value="all">Todas</option>
-                <option value="Hambúrgueres">Hambúrgueres</option>
-                <option value="Pizzas">Pizzas</option>
-                <option value="Combos">Combos</option>
-                <option value="Bebidas">Bebidas</option>
-                <option value="Sobremesas">Sobremesas</option>
-                <option value="Porções">Porções</option>
-              </select>
-            </label>
+            <p class="section-kicker">Destaque da casa</p>
+            <h2 id="featured-title">Produto em destaque</h2>
           </div>
         </div>
-        <div id="menu-items" class="cards-grid" aria-live="polite"></div>
+        <div id="featured-product-content" class="featured-product-content"></div>
       </div>
     </section>
 
-    <section class="order-area" aria-label="Pedido e checkout">
-      <div class="container order-layout">
-        <aside id="cart" class="cart-panel" aria-labelledby="cart-title">
-          <div class="section-heading compact-heading">
-            <div>
-              <p class="section-kicker">Seu pedido</p>
-              <h2 id="cart-title">Carrinho</h2>
-            </div>
-            <span class="cart-count" id="cart-count">0 itens</span>
+    <section id="quick-access" class="page-section quick-access-section" aria-labelledby="quick-access-title">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Acesso rapido</p>
+            <h2 id="quick-access-title">O que voce procura?</h2>
           </div>
-          <ul id="cart-items" class="cart-items">
-            <li class="empty-state">Seu carrinho esta vazio.</li>
-          </ul>
-          <dl class="cart-summary">
-            <div>
-              <dt>Subtotal</dt>
-              <dd id="cart-subtotal">R$ 0,00</dd>
-            </div>
-            <div>
-              <dt>Entrega</dt>
-              <dd id="cart-fee">R$ 0,00</dd>
-            </div>
-            <div class="summary-total">
-              <dt>Total</dt>
-              <dd id="cart-total">R$ 0,00</dd>
-            </div>
-          </dl>
-        </aside>
-
-        <section id="checkout" class="checkout-section" aria-labelledby="checkout-title">
-          <div class="section-heading compact-heading">
-            <div>
-              <p class="section-kicker">Pagamento direto</p>
-              <h2 id="checkout-title">Checkout</h2>
-            </div>
-            <span class="secure-pill">Ambiente simulado</span>
-          </div>
-          <form id="checkout-form" class="form-grid">
-            <label class="field" for="checkout-name">
-              <span>Nome completo</span>
-              <input id="checkout-name" name="name" type="text" autocomplete="name" minlength="3" required>
-            </label>
-            <label class="field" for="checkout-phone">
-              <span>Telefone</span>
-              <input id="checkout-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" minlength="10"
-                maxlength="15" placeholder="(00) 00000-0000" required>
-            </label>
-            <label class="field field-full" for="checkout-address">
-              <span>Endereco de entrega</span>
-              <input id="checkout-address" name="address" type="text" autocomplete="street-address" minlength="8"
-                required>
-            </label>
-            <label class="field" for="checkout-payment">
-              <span>Pagamento</span>
-              <select id="checkout-payment" name="payment" required>
-                <option value="">Selecione</option>
-                <option value="pix">Pix</option>
-                <option value="card">Cartao</option>
-                <option value="cash">Dinheiro</option>
-              </select>
-            </label>
-            <label class="field" for="checkout-document">
-              <span>CPF/CNPJ opcional</span>
-              <input id="checkout-document" name="document" type="text" inputmode="numeric" minlength="11"
-                maxlength="18">
-            </label>
-            <label class="field field-full field-checkbox" for="checkout-use-profile">
-              <input id="checkout-use-profile" name="use-profile" type="checkbox" checked>
-              <span>Usar dados do perfil</span>
-            </label>
-            <div class="field-full form-actions">
-              <button class="button button-primary" type="submit">Finalizar pedido</button>
-              <p id="checkout-feedback" class="form-feedback" aria-live="polite"></p>
-            </div>
-          </form>
-        </section>
+        </div>
+        <div class="quick-access-grid">
+          <a class="quick-access-card" href="cardapio.html">
+            <span class="quick-access-icon">🍔</span>
+            <strong>Cardapio</strong>
+            <span>Explore nossos lanches, pizzas e mais</span>
+          </a>
+          <a class="quick-access-card" href="reservas.html">
+            <span class="quick-access-icon">🪑</span>
+            <strong>Reservas de Mesas</strong>
+            <span>Reserve sua mesa com antecedencia</span>
+          </a>
+          <a class="quick-access-card" href="feedbacks.html">
+            <span class="quick-access-icon">⭐</span>
+            <strong>Feedbacks</strong>
+            <span>Veja o que nossos clientes acham</span>
+          </a>
+          <a class="quick-access-card" href="carrinho.html">
+            <span class="quick-access-icon">🛒</span>
+            <strong>Meu Carrinho</strong>
+            <span>Revise seu pedido antes de finalizar</span>
+          </a>
+        </div>
       </div>
     </section>
 
-    <section id="booking" class="page-section booking-section" aria-labelledby="booking-title">
-      <div class="container split-layout">
-        <div class="section-copy">
-          <p class="section-kicker">Agendamento</p>
-          <h2 id="booking-title">Reserve uma mesa</h2>
-          <p>Escolha data, horario e quantidade de pessoas para organizar sua visita com antecedencia.</p>
-        </div>
-        <form id="booking-form" class="panel-form">
-          <label class="field" for="booking-date">
-            <span>Data</span>
-            <input id="booking-date" name="date" type="date" required>
-          </label>
-          <label class="field" for="booking-time">
-            <span>Horario</span>
-            <input id="booking-time" name="time" type="time" min="11:00" max="23:00" required>
-          </label>
-          <label class="field" for="booking-guests">
-            <span>Pessoas</span>
-            <input id="booking-guests" name="guests" type="number" min="1" max="12" value="2" required>
-          </label>
-          <button class="button button-primary" type="submit">Confirmar reserva</button>
-          <p id="booking-feedback" class="form-feedback" aria-live="polite"></p>
-        </form>
-      </div>
-    </section>
-
-    <section id="feedback" class="page-section feedback-section" aria-labelledby="feedback-title">
-      <div class="container feedback-layout">
-        <div>
-          <p class="section-kicker">Opiniões</p>
-          <h2 id="feedback-title">Feedbacks</h2>
-          <div class="rating-summary">
-            <strong id="average-rating">0,0</strong>
-            <span>media das avaliações</span>
+    <section id="benefits" class="page-section benefits-section" aria-labelledby="benefits-title">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Por que escolher</p>
+            <h2 id="benefits-title">Nossos diferenciais</h2>
           </div>
-          <div id="feedback-list" class="feedback-list"></div>
         </div>
-        <form id="feedback-form" class="panel-form">
-          <label class="field" for="feedback-name">
-            <span>Nome</span>
-            <input id="feedback-name" name="name" type="text" required>
-          </label>
-          <label class="field" for="feedback-rating">
-            <span>Nota: <strong id="rating-value">5</strong>/5</span>
-            <input id="feedback-rating" name="rating" type="range" min="1" max="5" value="5">
-          </label>
-          <label class="field" for="feedback-comment">
-            <span>Comentario</span>
-            <textarea id="feedback-comment" name="comment" rows="4" minlength="10" required></textarea>
-          </label>
-          <button class="button button-primary" type="submit">Enviar feedback</button>
-          <p id="feedback-message" class="form-feedback" aria-live="polite"></p>
-        </form>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <span class="benefit-icon">⚡</span>
+            <strong>Entrega rapida</strong>
+            <span>Seu pedido chega quentinho em media em 25 minutos.</span>
+          </div>
+          <div class="benefit-card">
+            <span class="benefit-icon">🔒</span>
+            <strong>Pagamento seguro</strong>
+            <span>Pague com Pix, cartao ou dinheiro com total seguranca.</span>
+          </div>
+          <div class="benefit-card">
+            <span class="benefit-icon">📅</span>
+            <strong>Reservas antecipadas</strong>
+            <span>Garanta sua mesa com pagamento adiantado simulado.</span>
+          </div>
+          <div class="benefit-card">
+            <span class="benefit-icon">💬</span>
+            <strong>Avaliacoes de clientes</strong>
+            <span>Feedbacks reais de quem ja experimentou.</span>
+          </div>
+        </div>
       </div>
     </section>
   </main>
-
-  <footer class="site-footer">
-    <div class="container footer-layout">
-      <strong>Fast Lanche</strong>
-      <small>&copy; 2026 Fast Lanche. Todos os direitos reservados.</small>
-    </div>
-  </footer>
 
   <!-- Modal overlay para confirmacoes -->
   <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -259,7 +143,7 @@
   <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/page-init.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description"
+        content="Fast Lanche - Perfil do usuario. Gerencie seus dados pessoais, avatar e preferencias." />
+    <meta name="theme-color" content="#161616" />
+    <meta name="robots" content="index, follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta property="og:title" content="Fast Lanche - Perfil" />
+    <meta property="og:description" content="Gerencie seus dados pessoais, avatar e preferencias." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:image" content="assets/logo/fast-lanche-logo.svg" />
+    <title>Fast Lanche - Perfil</title>
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <main id="top">
+        <section id="profile-page" class="page-section profile-page-section" aria-labelledby="profile-page-title">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-kicker">Sua conta</p>
+                        <h1 id="profile-page-title">Meu Perfil</h1>
+                    </div>
+                </div>
+
+                <div class="profile-page-layout">
+                    <div class="profile-page-main">
+                        <!-- Avatar -->
+                        <div class="profile-avatar-section">
+                            <div class="profile-avatar-preview" id="profile-avatar-preview">
+                                <span class="profile-avatar-initials-large" id="profile-avatar-initials">?</span>
+                                <img class="profile-avatar-img-large" id="profile-avatar-img" alt="Foto do perfil"
+                                    style="display:none;">
+                            </div>
+                            <div class="profile-avatar-actions">
+                                <label class="button button-secondary button-small">
+                                    Alterar foto
+                                    <input type="file" id="profile-avatar-upload" accept="image/*"
+                                        style="display:none;">
+                                </label>
+                                <button class="button button-secondary button-small" id="profile-avatar-remove"
+                                    type="button">Remover foto</button>
+                            </div>
+                        </div>
+
+                        <!-- Dados pessoais -->
+                        <div class="profile-section">
+                            <h2 class="profile-section-title">Informacoes Pessoais</h2>
+                            <div class="profile-fields">
+                                <label class="field" for="profile-name">
+                                    <span>Nome completo</span>
+                                    <input id="profile-name" type="text" autocomplete="name" minlength="3" required>
+                                </label>
+                                <label class="field" for="profile-email">
+                                    <span>E-mail</span>
+                                    <input id="profile-email" type="email" autocomplete="email">
+                                </label>
+                                <label class="field" for="profile-phone">
+                                    <span>Telefone</span>
+                                    <input id="profile-phone" type="tel" autocomplete="tel" inputmode="tel"
+                                        minlength="10" maxlength="15" placeholder="(00) 00000-0000">
+                                </label>
+                                <label class="field field-full" for="profile-address">
+                                    <span>Endereco padrao de entrega</span>
+                                    <input id="profile-address" type="text" autocomplete="street-address" minlength="8">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Preferências -->
+                        <div class="profile-section">
+                            <h2 class="profile-section-title">Preferencias</h2>
+                            <div class="profile-fields">
+                                <label class="field" for="profile-payment">
+                                    <span>Metodo de pagamento preferido</span>
+                                    <select id="profile-payment">
+                                        <option value="">Nao definido</option>
+                                        <option value="pix">Pix</option>
+                                        <option value="card">Cartao</option>
+                                        <option value="cash">Dinheiro</option>
+                                    </select>
+                                </label>
+                                <label class="field field-checkbox" for="profile-notifications">
+                                    <input id="profile-notifications" type="checkbox" checked>
+                                    <span>Receber notificacoes</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="profile-page-actions">
+                            <button class="button button-primary" id="profile-save-btn" type="button">Salvar
+                                alteracoes</button>
+                            <p id="profile-feedback" class="form-feedback" aria-live="polite"></p>
+                        </div>
+                    </div>
+
+                    <aside class="profile-page-sidebar">
+                        <div class="profile-section">
+                            <h2 class="profile-section-title">Historico de Pedidos</h2>
+                            <div id="profile-orders-list" class="profile-orders-list"></div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal overlay para confirmacoes -->
+    <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title"></h3>
+                <button class="modal-close" id="modal-close" type="button" aria-label="Fechar modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-actions" id="modal-actions"></div>
+        </div>
+    </div>
+
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script type="module" src="js/page-init.js"></script>
+</body>
+
+</html>

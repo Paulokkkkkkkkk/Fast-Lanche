@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Fast Lanche - Login e cadastro. Acesse sua conta ou crie uma nova." />
+    <meta name="theme-color" content="#161616" />
+    <meta name="robots" content="index, follow" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta property="og:title" content="Fast Lanche - Login" />
+    <meta property="og:description" content="Acesse sua conta ou crie uma nova." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:image" content="assets/logo/fast-lanche-logo.svg" />
+    <title>Fast Lanche - Login</title>
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="assets/icons/favicon.svg">
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <main id="top">
+        <section id="login-page" class="page-section login-page-section" aria-labelledby="login-page-title">
+            <div class="container login-page-container">
+                <div class="login-page-card">
+                    <div class="login-page-header">
+                        <p class="section-kicker">Bem-vindo ao Fast Lanche</p>
+                        <h1 id="login-page-title">Acesse sua conta</h1>
+                    </div>
+
+                    <div class="login-tabs" role="tablist" aria-label="Login ou cadastro">
+                        <button class="login-tab active" id="show-login" type="button" role="tab"
+                            aria-selected="true">Login</button>
+                        <button class="login-tab" id="show-signup" type="button" role="tab"
+                            aria-selected="false">Cadastro</button>
+                    </div>
+
+                    <div class="login-panels">
+                        <div class="login-panel active" id="login-panel">
+                            <form id="login-form" class="form-grid" novalidate>
+                                <label class="field" for="login-email">
+                                    <span>E-mail</span>
+                                    <input id="login-email" name="email" type="email" autocomplete="email" required
+                                        placeholder="seu@email.com">
+                                </label>
+                                <label class="field" for="login-password">
+                                    <span>Senha</span>
+                                    <input id="login-password" name="password" type="password"
+                                        autocomplete="current-password" minlength="6" required
+                                        placeholder="Minimo 6 caracteres">
+                                </label>
+                                <div class="field-full form-actions">
+                                    <button class="button button-primary" type="submit">Entrar</button>
+                                    <p id="login-feedback" class="form-feedback" aria-live="polite"></p>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="login-panel" id="signup-panel">
+                            <form id="signup-form" class="form-grid" novalidate>
+                                <label class="field" for="signup-name">
+                                    <span>Nome completo</span>
+                                    <input id="signup-name" name="name" type="text" autocomplete="name" minlength="3"
+                                        required placeholder="Seu nome">
+                                </label>
+                                <label class="field" for="signup-email">
+                                    <span>E-mail</span>
+                                    <input id="signup-email" name="email" type="email" autocomplete="email" required
+                                        placeholder="seu@email.com">
+                                </label>
+                                <label class="field" for="signup-password">
+                                    <span>Senha</span>
+                                    <input id="signup-password" name="password" type="password"
+                                        autocomplete="new-password" minlength="6" required
+                                        placeholder="Minimo 6 caracteres">
+                                </label>
+                                <label class="field" for="signup-confirm-password">
+                                    <span>Confirmar senha</span>
+                                    <input id="signup-confirm-password" name="confirm-password" type="password"
+                                        autocomplete="new-password" minlength="6" required placeholder="Repita a senha">
+                                </label>
+                                <label class="field" for="signup-phone">
+                                    <span>Telefone (opcional)</span>
+                                    <input id="signup-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"
+                                        minlength="10" maxlength="15" placeholder="(00) 00000-0000">
+                                </label>
+                                <div class="field-full form-actions">
+                                    <button class="button button-primary" type="submit">Criar conta</button>
+                                    <p id="signup-feedback" class="form-feedback" aria-live="polite"></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal overlay para confirmacoes -->
+    <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title"></h3>
+                <button class="modal-close" id="modal-close" type="button" aria-label="Fechar modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-actions" id="modal-actions"></div>
+        </div>
+    </div>
+
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script type="module" src="js/page-init.js"></script>
+</body>
+
+</html>
