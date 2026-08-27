@@ -663,7 +663,7 @@ Executar:
 
 ---
 
-# FASE 31 — ARQUITETURA MULTI-PÁGINAS
+# FASE 31 — ARQUITETURA MULTI-PÁGINAS ✅
 
 ## Objetivo
 
@@ -730,7 +730,7 @@ Implementar:
 
 ---
 
-# FASE 32 — PÁGINA HOME
+# FASE 32 — PÁGINA HOME ✅
 
 ## Objetivo
 

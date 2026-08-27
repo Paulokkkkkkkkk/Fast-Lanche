@@ -67,6 +67,11 @@ async function initHome() {
 
     // Setup de interações demo (adicionar ao carrinho)
     setupDemoInteractions();
+
+    // Fase 32 - Página Home: produto em destaque e hero dinâmico
+    import('./home.js').then(({ setupHome }) => setupHome()).catch(err => {
+        console.warn('Falha ao inicializar a Home.', err);
+    });
 }
 
 function setupDemoInteractions() {
